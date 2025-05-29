@@ -10,6 +10,7 @@
 
     <modules>
         <module>CustomerRelationshipManagerWithSpringSecurity</module>
+        <module>EurekaServiceRegistry</module>
     </modules>
 
 </project>

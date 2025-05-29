@@ -53,16 +53,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
-    private String extractTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null) {
-            return null;
-        }
-
-        return Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("token"))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse(null);
-    }
 }
