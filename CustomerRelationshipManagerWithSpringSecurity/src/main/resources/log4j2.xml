@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <!-- Appenders -->
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
+        </Console>
+
+        <!-- File Appender for Service Logs -->
+        <File name="FileLoggerServices" fileName="CustomerRelationshipManagerWithSpringSecurity/logs/services/app.log" createOnDemand="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - TransactionId=%X{transactionId} - %msg%n" />
+        </File>
+
+        <!-- File Appender for DAO Logs -->
+        <File name="FileLoggerDAOs" fileName="CustomerRelationshipManagerWithSpringSecurity/logs/dao/app.log" createOnDemand="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - TransactionId=%X{transactionId} - %msg%n" />
+        </File>
+    </Appenders>
+
+    <!-- Loggers -->
+    <Loggers>
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="Console" />
+        </Root>
+
+        <!-- Custom Loggers -->
+        <Logger name="com.mygym.crm" level="warn" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="com.mygym.crm.backstages.core.services" level="info" additivity="false">
+            <AppenderRef ref="FileLoggerServices" />
+        </Logger>
+
+        <Logger name="com.mygym.crm.backstages.repositories.daos" level="info" additivity="false">
+            <AppenderRef ref="FileLoggerDAOs" />
+        </Logger>
+    </Loggers>
+</Configuration>
