@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mygym.crm</groupId>
-    <artifactId>customerRelationshipManagerWithSpringSecurity</artifactId>
+    <artifactId>customer-relationship-manager-with-spring-security</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mygym.crm</groupId>
-    <artifactId>EurekaServiceRegistry</artifactId>
+    <artifactId>eureka-service-registry</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>EurekaServiceRegistry</name>
-    <description>EurekaServiceRegistry</description>
+    <name>eureka-service-registry</name>
+    <description>eureka-service-registry</description>
     <url/>
     <licenses>
         <license/>
