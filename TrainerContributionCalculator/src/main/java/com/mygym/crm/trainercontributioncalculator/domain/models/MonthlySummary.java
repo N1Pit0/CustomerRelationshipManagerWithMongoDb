@@ -15,13 +15,13 @@ public class MonthlySummary {
     @Column(unique = true, nullable = false, name = "monthly_summary_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Integer Year;
+    @Column()
+    private Integer year;
 
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
 
-    @Column(nullable = false)
+    @Column()
     private Integer trainingDuration;
 
     @ManyToOne

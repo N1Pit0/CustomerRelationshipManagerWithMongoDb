@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-@Component("database")
+@Component("customDatabase")
 public class DataBaseHealthIndicator implements HealthIndicator {
     private final DataSource dataSource;
 
@@ -18,18 +18,13 @@ public class DataBaseHealthIndicator implements HealthIndicator {
     }
 
     @Override
-    public Health getHealth(boolean includeDetails) {
-        return HealthIndicator.super.getHealth(includeDetails);
-    }
-
-    @Override
     public Health health() {
         try (Connection connection = dataSource.getConnection()) {
 
             return Health.up()
                     .withDetail("Database Status", "Up and Running")
-                    .withDetail("Database URL", dataSource.getConnection().getMetaData().getURL())
-                    .withDetail("Database User", dataSource.getConnection().getMetaData().getUserName())
+                    .withDetail("Database URL", connection.getMetaData().getURL())
+                    .withDetail("Database User", connection.getMetaData().getUserName())
                     .build();
         } catch (Exception e) {
 

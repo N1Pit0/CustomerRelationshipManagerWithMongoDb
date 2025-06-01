@@ -7,6 +7,12 @@ springdoc:
 server:
   servlet:
     context-path: /CustomerRelationshipManager
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
 
 spring:
   application:
@@ -39,18 +45,18 @@ spring:
     password: ${postgres_password}
     driver-class-name: org.postgresql.Driver
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-  prometheus:
-    metrics:
-      export:
-        enabled: false
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always
+#  prometheus:
+#    metrics:
+#      export:
+#        enabled: false
 
 ---
 # Development Profile Configuration

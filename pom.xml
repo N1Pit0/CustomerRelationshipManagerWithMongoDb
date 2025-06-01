@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mygym.crm</groupId>
-    <artifactId>customer-relationship-managet-with-microservices</artifactId>
+    <artifactId>customer-relationship-manager-with-microservices</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 
