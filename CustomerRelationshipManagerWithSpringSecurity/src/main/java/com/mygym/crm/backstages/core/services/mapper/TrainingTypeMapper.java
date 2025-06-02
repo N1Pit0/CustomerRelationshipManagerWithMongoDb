@@ -1,4 +1,4 @@
-package com.mygym.crm.backstages.mapper;
+package com.mygym.crm.backstages.core.services.mapper;
 
 import com.mygym.crm.backstages.core.dtos.response.trainingtypedto.select.SelectTrainingTypeDtoSet;
 import com.mygym.crm.backstages.domain.models.TrainingType;

@@ -12,6 +12,7 @@
         <module>CustomerRelationshipManagerWithSpringSecurity</module>
         <module>EurekaServiceRegistry</module>
         <module>TrainerContributionCalculator</module>
+        <module>shared-module</module>
     </modules>
 
 </project>

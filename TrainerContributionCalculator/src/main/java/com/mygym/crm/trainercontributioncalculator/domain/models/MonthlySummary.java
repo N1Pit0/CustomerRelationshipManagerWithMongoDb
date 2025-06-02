@@ -25,7 +25,7 @@ public class MonthlySummary {
     private Integer trainingDuration;
 
     @ManyToOne
-    @JoinColumn(name = "trainer_summary_id", nullable = false)
+    @JoinColumn(name = "trainer_summary_id", nullable = false, referencedColumnName = "trainer_summary_id")
     private TrainerSummary trainerSummary;
 
 }

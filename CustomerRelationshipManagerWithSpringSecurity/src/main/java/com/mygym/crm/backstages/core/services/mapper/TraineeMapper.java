@@ -1,4 +1,4 @@
-package com.mygym.crm.backstages.mapper;
+package com.mygym.crm.backstages.core.services.mapper;
 
 import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapSelectTrainerDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapUpdateTrainerDto;

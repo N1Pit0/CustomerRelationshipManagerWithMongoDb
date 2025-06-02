@@ -1,15 +1,12 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.trainingdto.TrainingDto;
-import com.mygym.crm.backstages.domain.models.Trainee;
-import com.mygym.crm.backstages.domain.models.Trainer;
-import com.mygym.crm.backstages.domain.models.Training;
-import com.mygym.crm.backstages.domain.models.TrainingType;
+import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
+import com.mygym.crm.backstages.domain.models.*;
 import com.mygym.crm.backstages.exceptions.custom.NoTrainerException;
-import com.mygym.crm.backstages.interfaces.daorepositories.TraineeDao;
-import com.mygym.crm.backstages.interfaces.daorepositories.TrainerDao;
-import com.mygym.crm.backstages.interfaces.daorepositories.TrainingDao;
+import com.mygym.crm.backstages.interfaces.daorepositories.*;
 import com.mygym.crm.backstages.interfaces.services.TrainingService;
+import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.mygym.crm.sharedmodule.ActionEnum.ADD;
+
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
@@ -28,13 +27,16 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingDao trainingDao;
     private final TrainerDao trainerDao;
     private final TraineeDao traineeDao;
-
+    private final TrainerHoursCalculator trainerHoursCalculator;
+    private final TrainerMapper trainerMapper;
 
     @Autowired
-    public TrainingServiceImpl(TrainingDao trainingDao, TrainerDao trainerDao, TraineeDao traineeDao) {
+    public TrainingServiceImpl(TrainingDao trainingDao, TrainerDao trainerDao, TraineeDao traineeDao, TrainerHoursCalculator trainerHoursCalculator, TrainerMapper trainerMapper) {
         this.trainingDao = trainingDao;
         this.trainerDao = trainerDao;
         this.traineeDao = traineeDao;
+        this.trainerHoursCalculator = trainerHoursCalculator;
+        this.trainerMapper = trainerMapper;
     }
 
     @Transactional
@@ -70,7 +72,12 @@ public class TrainingServiceImpl implements TrainingService {
             Optional<Training> optionalTraining = trainingDao.add(newTraining);
 
             optionalTraining.ifPresentOrElse(
-                    (training) -> logger.info("Training with trainingId: {} has been created", training.getId()),
+                    (training) -> {
+                        logger.info("Training with trainingId: {} has been created", training.getId());
+                        TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
+                        trainingWorkloadDto.setActionType(ADD);
+                        trainerHoursCalculator.acceptWorkload(trainingWorkloadDto);
+                    },
                     () -> logger.warn("Training could not be created")
             );
 

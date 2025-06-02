@@ -1,4 +1,4 @@
-package com.mygym.crm.backstages.mapper;
+package com.mygym.crm.backstages.core.services.mapper;
 
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.mapping.MapSelectTraineeDto;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.mapping.MapUpdateTraineeDto;
@@ -10,6 +10,7 @@ import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
 import com.mygym.crm.backstages.domain.models.TrainingType;
+import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -38,6 +39,13 @@ public interface TrainerMapper {
     SelectTrainerTrainingsDtoSet.SelectTrainerTrainingsDto mapTrainingToSelectTrainerTrainingsDto(Training training);
 
     SelectTrainingTypeDtoSet.SelectTrainingType trainingTypeToTrainingTypeDto(TrainingType trainingType);
+
+    @Mapping(target = "userName", source = "trainer.userName")
+    @Mapping(target = "firstName", source = "trainer.firstName")
+    @Mapping(target = "lastName", source = "trainer.lastName")
+    @Mapping(target = "isActive", source = "trainer.isActive")
+    @Mapping(target = "trainingDate", expression = "java(java.time.LocalDate.now())")
+    TrainerWorkloadDto mapTrainingToTrainerWorkloadDto(Training training);
 
     default SelectTrainerTrainingsDtoSet trainingToSelectTrainerTrainingDtoSet(Set<Training> trainings) {
         SelectTrainerTrainingsDtoSet selectTrainerTrainingsDtoSet = new SelectTrainerTrainingsDtoSet();

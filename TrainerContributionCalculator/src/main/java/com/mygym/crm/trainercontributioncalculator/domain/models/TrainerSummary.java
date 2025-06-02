@@ -17,7 +17,7 @@ public class TrainerSummary {
     private Long trainerSummaryId;
 
     @Column(nullable = false, unique = true)
-    private String Username;
+    private String username;
 
     @Column(nullable = false)
     private String firstName;

@@ -4,7 +4,7 @@ import com.mygym.crm.backstages.core.dtos.response.trainingtypedto.select.Select
 import com.mygym.crm.backstages.domain.models.TrainingType;
 import com.mygym.crm.backstages.exceptions.custom.NoResourceException;
 import com.mygym.crm.backstages.interfaces.services.TrainingTypeRadOnlyService;
-import com.mygym.crm.backstages.mapper.TrainingTypeMapper;
+import com.mygym.crm.backstages.core.services.mapper.TrainingTypeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
