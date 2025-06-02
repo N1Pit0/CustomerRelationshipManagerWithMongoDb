@@ -12,5 +12,9 @@ public enum MonthEnum {
     SEPTEMBER,
     OCTOBER,
     NOVEMBER,
-    DECEMBER
+    DECEMBER;
+
+    public String toString() {
+        return name();
+    }
 }
