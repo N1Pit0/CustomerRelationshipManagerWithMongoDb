@@ -32,7 +32,7 @@ spring:
 #  level:
 #    org:
 #      springframework:
-#        TRACE
+#        DEBUG
 ---
 # Local Profile Configuration
 spring:
@@ -45,18 +45,18 @@ spring:
     password: ${postgres_password}
     driver-class-name: org.postgresql.Driver
 
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: '*'
-#  endpoint:
-#    health:
-#      show-details: always
-#  prometheus:
-#    metrics:
-#      export:
-#        enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: false
 
 ---
 # Development Profile Configuration
