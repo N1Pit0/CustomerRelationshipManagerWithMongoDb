@@ -14,6 +14,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Transactional
     @Override
-    public Optional<Training> add(TrainingDto trainingDto) {
+    public Optional<Training> add(TrainingDto trainingDto, Model model) {
         String transactionId = UUID.randomUUID().toString();
         MDC.put("transactionId", transactionId);
 
@@ -76,7 +77,7 @@ public class TrainingServiceImpl implements TrainingService {
                         logger.info("Training with trainingId: {} has been created", training.getId());
                         TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
                         trainingWorkloadDto.setActionType(ADD);
-                        trainerHoursCalculator.acceptWorkload(trainingWorkloadDto);
+                        model.addAttribute("trainer-hours", trainerHoursCalculator.acceptWorkload(trainingWorkloadDto));
                     },
                     () -> logger.warn("Training could not be created")
             );

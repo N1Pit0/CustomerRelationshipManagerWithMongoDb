@@ -44,7 +44,6 @@ public interface TrainerMapper {
     @Mapping(target = "firstName", source = "trainer.firstName")
     @Mapping(target = "lastName", source = "trainer.lastName")
     @Mapping(target = "isActive", source = "trainer.isActive")
-    @Mapping(target = "trainingDate", expression = "java(java.time.LocalDate.now())")
     TrainerWorkloadDto mapTrainingToTrainerWorkloadDto(Training training);
 
     default SelectTrainerTrainingsDtoSet trainingToSelectTrainerTrainingDtoSet(Set<Training> trainings) {

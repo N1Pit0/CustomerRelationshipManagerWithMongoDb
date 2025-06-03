@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,10 +42,10 @@ public class TrainingController {
             @ApiResponse(responseCode = "409", description = "The Training resource is not there OR could not perform the action"),
             @ApiResponse(responseCode = "500", description = "Application failed to process the request")
     })
-    public ResponseEntity<Void> addTraining(@RequestBody TrainingDto trainingDto) {
+    public ResponseEntity<Void> addTraining(@RequestBody TrainingDto trainingDto, Model model) {
         userService.validateDto(trainingDto);
 
-        Optional<Training> optionalTraining = trainingService.add(trainingDto);
+        Optional<Training> optionalTraining = trainingService.add(trainingDto, model);
 
         if (optionalTraining.isPresent()) {
             return ResponseEntity.ok().build();

@@ -27,7 +27,17 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
 
     private boolean addTrainingHours(TrainerWorkloadDto trainerWorkloadDto) {
         TrainerSummary trainerSummary = trainingRepository.findByUsername(trainerWorkloadDto.getUserName());
-        trainerSummary.getMonthlySummaries().stream();
+        if(trainerSummary == null) {
+            trainerSummary = new TrainerSummary();
+            trainerSummary.setUsername(trainerWorkloadDto.getUserName());
+            trainerSummary.setFirstName(trainerWorkloadDto.getFirstName());
+            trainerSummary.setLastName(trainerWorkloadDto.getLastName());
+            trainerSummary.setIsActive(trainerWorkloadDto.getIsActive());
+            trainerSummary.setMonthlySummaries(trainerSummary.getMonthlySummaries());
+            trainingRepository.save(trainerSummary);
+            return true;
+        }
+
         return false;
     }
 
