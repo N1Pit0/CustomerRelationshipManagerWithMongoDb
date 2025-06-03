@@ -19,7 +19,6 @@ public class TrainingController implements MyClient {
 
     @Override
     public ResponseEntity<Void> acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
-        System.out.println("Mamamamamaaaaa ooooooooooooooo");
 
         return acceptWorkload.acceptWorkload(trainerWorkloadDto)
                 ? ResponseEntity.ok().build()

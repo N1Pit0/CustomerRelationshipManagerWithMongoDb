@@ -16,6 +16,8 @@ public class TrainerWorkloadDto {
 
     private LocalDate trainingDate;
 
+    private Integer trainingDuration;
+
     private ActionEnum actionType;
 
 
