@@ -20,7 +20,7 @@ public class Trainer extends User {
     @JoinColumn(name = "training_type_id", nullable = false)
     private TrainingType trainingType;
 
-    @OneToMany(mappedBy = "trainer")
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Training> trainings;
 
 }
