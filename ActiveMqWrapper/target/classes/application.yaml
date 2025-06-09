@@ -1,0 +1,26 @@
+
+spring:
+  application:
+    name: standalone-activemq-wrapper
+
+server:
+  port: 0
+
+Eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port} # Unique instance ID
+    prefer-ip-address: true # Use IP address instead of hostname
+    metadata-map:
+      version: 1.0.0
+      region: us-east-1
+      environment: production
+      custom-key: custom-value
+      broker-password: activemq-password
+      broker-username: activemq-username
+      broker-url: tcp://localhost:61616
+
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
