@@ -13,6 +13,7 @@
         <module>EurekaServiceRegistry</module>
         <module>TrainerContributionCalculator</module>
         <module>shared-module</module>
+        <module>ActiveMqWrapper</module>
     </modules>
 
 </project>

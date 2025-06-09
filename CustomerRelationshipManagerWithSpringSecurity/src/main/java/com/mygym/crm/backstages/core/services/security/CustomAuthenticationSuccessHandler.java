@@ -1,6 +1,5 @@
     package com.mygym.crm.backstages.core.services.security;
 
-    import com.mygym.crm.backstages.core.services.communication.JwtTokenHolder;
     import com.mygym.crm.backstages.core.services.security.jwt.JwtService;
     import com.mygym.crm.backstages.interfaces.services.security.LoginAttemptService;
     import jakarta.servlet.ServletException;
@@ -19,12 +18,10 @@
 
         private final LoginAttemptService loginAttemptService;
         private final JwtService jwtService;
-        private final JwtTokenHolder jwtTokenHolder;
 
-        public CustomAuthenticationSuccessHandler(LoginAttemptService loginAttemptService, JwtService jwtService, JwtTokenHolder jwtTokenHolder) {
+        public CustomAuthenticationSuccessHandler(LoginAttemptService loginAttemptService, JwtService jwtService) {
             this.loginAttemptService = loginAttemptService;
             this.jwtService = jwtService;
-            this.jwtTokenHolder = jwtTokenHolder;
         }
 
         @Override
@@ -43,9 +40,6 @@
             String jwtToken = jwtService.createToken(username, 24 * 60 * 60 * 1000, claims);
 
             response.addHeader("Authorization", "Bearer " + jwtToken);
-            jwtTokenHolder.setJwtToken("Bearer " + jwtToken);
-
-            System.out.println(jwtTokenHolder.getJwtToken());
 
             super.onAuthenticationSuccess(request, response, authentication); // Standard Spring Security behavior
         }
