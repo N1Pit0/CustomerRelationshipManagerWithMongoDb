@@ -28,7 +28,7 @@ eureka:
 
 logging:
   file:
-    name: logs/trainer-contribution-calculator.log
+    name: TrainerContributionCalculator/logs/trainer-contribution-calculator.log
   level:
     root: INFO
     com.mygym.crm.trainercontributioncalculator: DEBUG

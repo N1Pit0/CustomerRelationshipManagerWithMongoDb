@@ -1,0 +1,23 @@
+# Staging Profile Configuration
+spring:
+  config:
+    activate:
+      on-profile: stg
+  datasource:
+    url: jdbc:postgresql://stg-db-server:5432/stg-db
+    username: stg_user
+    password: stg_password
+    driver-class-name: org.postgresql.Driver
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    metrics:
+      export:
+        enabled: true
