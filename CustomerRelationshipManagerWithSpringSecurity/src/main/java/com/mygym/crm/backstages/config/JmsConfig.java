@@ -36,7 +36,7 @@ public class JmsConfig {
         var factory = new ActiveMQConnectionFactory();
 
         var serviceInstance = discoveryClient.getInstances("standalone-activemq-wrapper").stream()
-                        .findFirst().orElseThrow();
+                .findFirst().orElseThrow();
 
         String brokerURL = serviceInstance.getMetadata().get("broker-url");
         String brokerPassword = serviceInstance.getMetadata().get("broker-password");

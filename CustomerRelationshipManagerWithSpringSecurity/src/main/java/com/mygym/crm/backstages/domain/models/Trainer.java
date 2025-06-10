@@ -3,7 +3,10 @@ package com.mygym.crm.backstages.domain.models;
 
 import com.mygym.crm.backstages.domain.models.common.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Set;
 

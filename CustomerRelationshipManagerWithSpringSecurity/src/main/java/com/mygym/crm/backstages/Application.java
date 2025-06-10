@@ -1,6 +1,5 @@
 package com.mygym.crm.backstages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.mygym.crm.backstages.core.services.communication.Sender;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

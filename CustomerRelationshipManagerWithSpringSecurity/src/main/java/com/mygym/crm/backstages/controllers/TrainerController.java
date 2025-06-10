@@ -8,12 +8,12 @@ import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.SelectTrain
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.TrainerCredentials;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.update.UpdateTrainerDto;
 import com.mygym.crm.backstages.core.services.UserService;
+import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
 import com.mygym.crm.backstages.exceptions.custom.NoResourceException;
 import com.mygym.crm.backstages.exceptions.custom.ResourceCreationException;
 import com.mygym.crm.backstages.interfaces.services.TrainerServiceCommon;
-import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
