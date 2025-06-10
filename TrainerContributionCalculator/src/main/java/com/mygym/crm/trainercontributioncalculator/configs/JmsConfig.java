@@ -1,21 +1,30 @@
 package com.mygym.crm.trainercontributioncalculator.configs;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.connection.JmsTransactionManager;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableJms
+@EnableTransactionManagement
 public class JmsConfig {
 
     private DiscoveryClient discoveryClient;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
 
     @Autowired
     public void setDiscoveryClient(DiscoveryClient discoveryClient) {
@@ -53,9 +62,31 @@ public class JmsConfig {
     @Bean
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
         var factory = new DefaultJmsListenerContainerFactory();
+
         factory.setConnectionFactory(connectionFactory());
         factory.setConcurrency("1-5");
         factory.setMessageConverter(jacksonJmsMessageConverter());
+        factory.setTransactionManager(transactionManager());
+        factory.setErrorHandler(t -> {
+            LOGGER.info("Handling error message {}", t.getMessage());
+        });
+
         return factory;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new JmsTransactionManager(connectionFactory());
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(){
+        var jmsTemplate = new JmsTemplate(connectionFactory());
+
+        jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
+        jmsTemplate.setDeliveryPersistent(true);
+        jmsTemplate.setSessionTransacted(true);
+
+        return jmsTemplate;
     }
 }

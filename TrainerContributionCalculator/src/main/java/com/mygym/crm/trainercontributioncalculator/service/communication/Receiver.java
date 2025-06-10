@@ -8,6 +8,7 @@ public class Receiver {
 
     @JmsListener(destination = "queue1")
     public void receiveMessage(Object message) {
-        System.out.println(message);
+
+        throw new RuntimeException("test exception");
     }
 }
