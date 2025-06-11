@@ -1,7 +1,7 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.trainingdto.TrainingDto;
-import com.mygym.crm.backstages.core.services.communication.TrainerHoursCalculator;
+import com.mygym.crm.backstages.core.services.communication.SendToTrainerContributionCalculatorQueue;
 import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
@@ -34,16 +34,17 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingDao trainingDao;
     private final TrainerDao trainerDao;
     private final TraineeDao traineeDao;
-    private final TrainerHoursCalculator trainerHoursCalculator;
     private final TrainerMapper trainerMapper;
+    private final SendToTrainerContributionCalculatorQueue sendToTrainerContributionCalculatorQueue;
 
     @Autowired
-    public TrainingServiceImpl(TrainingDao trainingDao, TrainerDao trainerDao, TraineeDao traineeDao, TrainerHoursCalculator trainerHoursCalculator, TrainerMapper trainerMapper) {
+    public TrainingServiceImpl(TrainingDao trainingDao, TrainerDao trainerDao, TraineeDao traineeDao, TrainerMapper trainerMapper,
+                               SendToTrainerContributionCalculatorQueue sendToTrainerContributionCalculatorQueue) {
         this.trainingDao = trainingDao;
         this.trainerDao = trainerDao;
         this.traineeDao = traineeDao;
-        this.trainerHoursCalculator = trainerHoursCalculator;
         this.trainerMapper = trainerMapper;
+        this.sendToTrainerContributionCalculatorQueue = sendToTrainerContributionCalculatorQueue;
     }
 
     @Transactional
@@ -83,7 +84,7 @@ public class TrainingServiceImpl implements TrainingService {
                         logger.info("Training with trainingId: {} has been created", training.getId());
                         TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
                         trainingWorkloadDto.setActionType(ADD);
-                        model.addAttribute("trainer-hours", trainerHoursCalculator.acceptWorkload(trainingWorkloadDto));
+                        sendToTrainerContributionCalculatorQueue.sendMessage(trainingWorkloadDto);
                     },
                     () -> logger.warn("Training could not be created")
             );

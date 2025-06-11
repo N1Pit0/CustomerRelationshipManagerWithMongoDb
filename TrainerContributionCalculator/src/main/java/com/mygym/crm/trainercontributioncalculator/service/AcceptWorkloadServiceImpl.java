@@ -23,12 +23,12 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
     }
 
     @Transactional
-    public boolean acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
+    public void acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
         logger.info("Accepting workload for trainer: {}", trainerWorkloadDto.getUserName());
-        return switch (trainerWorkloadDto.getActionType()) {
+        switch (trainerWorkloadDto.getActionType()) {
             case ADD -> addTrainingHours(trainerWorkloadDto);
             case DELETE -> removeTrainingHours(trainerWorkloadDto);
-        };
+        }
     }
 
     private boolean addTrainingHours(TrainerWorkloadDto trainerWorkloadDto) {
