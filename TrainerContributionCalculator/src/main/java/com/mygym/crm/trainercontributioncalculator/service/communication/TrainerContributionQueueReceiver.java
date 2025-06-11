@@ -3,7 +3,7 @@ package com.mygym.crm.trainercontributioncalculator.service.communication;
 import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import org.springframework.jms.annotation.JmsListener;
 
-public interface ReceiveFromTrainerContributionCalculatorQueue {
+public interface TrainerContributionQueueReceiver {
 
     String TRAINER_CONTRIBUTION_CALCULATOR_QUEUE = "TRAINER_CONTRIBUTION_CALCULATOR_QUEUE";
 

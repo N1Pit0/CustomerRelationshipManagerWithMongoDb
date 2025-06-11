@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @FunctionalInterface
-public interface SendToTrainerContributionCalculatorQueue {
+public interface TrainerContributionQueueSender {
 
     String TRAINER_CONTRIBUTION_CALCULATOR_QUEUE = "TRAINER_CONTRIBUTION_CALCULATOR_QUEUE";
 
-    Logger LOGGER = LoggerFactory.getLogger(SendToTrainerContributionCalculatorQueue.class);
+    Logger LOGGER = LoggerFactory.getLogger(TrainerContributionQueueSender.class);
 
 //    @CircuitBreaker(name = "trainerHoursCircuitBreaker", fallbackMethod = "fallbackAcceptWorkload")
     void sendMessage(Object message);

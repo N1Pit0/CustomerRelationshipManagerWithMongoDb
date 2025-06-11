@@ -1,18 +1,18 @@
 package com.mygym.crm.backstages.communication;
 
-import com.mygym.crm.backstages.core.services.communication.SendToTrainerContributionCalculatorQueue;
+import com.mygym.crm.backstages.core.services.communication.TrainerContributionQueueSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class SendToTrainerContributionCalculatorQueueImpl implements SendToTrainerContributionCalculatorQueue {
+public class TrainerContributionQueueSenderImpl implements TrainerContributionQueueSender {
 
     private final JmsTemplate jmsTemplate;
 
     @Autowired
-    public SendToTrainerContributionCalculatorQueueImpl(JmsTemplate jmsTemplate) {
+    public TrainerContributionQueueSenderImpl(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
     }
 

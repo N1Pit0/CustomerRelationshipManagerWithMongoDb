@@ -2,23 +2,21 @@ package com.mygym.crm.trainercontributioncalculator.communication;
 
 import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import com.mygym.crm.trainercontributioncalculator.service.AcceptWorkload;
-import com.mygym.crm.trainercontributioncalculator.service.communication.ReceiveFromTrainerContributionCalculatorQueue;
-import jdk.jfr.TransitionTo;
+import com.mygym.crm.trainercontributioncalculator.service.communication.TrainerContributionQueueReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class ReceiveFromTrainerContributionCalculatorQueueImpl implements ReceiveFromTrainerContributionCalculatorQueue {
+public class TrainerContributionQueueReceiverImpl implements TrainerContributionQueueReceiver {
 
     private final AcceptWorkload acceptWorkloadService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReceiveFromTrainerContributionCalculatorQueueImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainerContributionQueueReceiverImpl.class);
 
     @Autowired
-    public ReceiveFromTrainerContributionCalculatorQueueImpl(AcceptWorkload acceptWorkloadService) {
+    public TrainerContributionQueueReceiverImpl(AcceptWorkload acceptWorkloadService) {
         this.acceptWorkloadService = acceptWorkloadService;
     }
 

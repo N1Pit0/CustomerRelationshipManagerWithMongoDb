@@ -1,7 +1,7 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.trainingdto.TrainingDto;
-import com.mygym.crm.backstages.core.services.communication.SendToTrainerContributionCalculatorQueue;
+import com.mygym.crm.backstages.core.services.communication.TrainerContributionQueueSender;
 import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
@@ -35,16 +35,16 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainerDao trainerDao;
     private final TraineeDao traineeDao;
     private final TrainerMapper trainerMapper;
-    private final SendToTrainerContributionCalculatorQueue sendToTrainerContributionCalculatorQueue;
+    private final TrainerContributionQueueSender trainerContributionQueueSender;
 
     @Autowired
     public TrainingServiceImpl(TrainingDao trainingDao, TrainerDao trainerDao, TraineeDao traineeDao, TrainerMapper trainerMapper,
-                               SendToTrainerContributionCalculatorQueue sendToTrainerContributionCalculatorQueue) {
+                               TrainerContributionQueueSender trainerContributionQueueSender) {
         this.trainingDao = trainingDao;
         this.trainerDao = trainerDao;
         this.traineeDao = traineeDao;
         this.trainerMapper = trainerMapper;
-        this.sendToTrainerContributionCalculatorQueue = sendToTrainerContributionCalculatorQueue;
+        this.trainerContributionQueueSender = trainerContributionQueueSender;
     }
 
     @Transactional
@@ -83,7 +83,7 @@ public class TrainingServiceImpl implements TrainingService {
                     (training) -> {
                         TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
                         trainingWorkloadDto.setActionType(ADD);
-                        sendToTrainerContributionCalculatorQueue.sendMessage(trainingWorkloadDto);
+                        trainerContributionQueueSender.sendMessage(trainingWorkloadDto);
                         logger.info("Training with trainingId: {} has been created", training.getId());
                     },
                     () -> logger.warn("Training could not be created")
