@@ -1,6 +1,8 @@
 package com.mygym.crm.trainercontributioncalculator.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,7 @@ public class JmsConfig {
         this.discoveryClient = discoveryClient;
     }
 
+    @CircuitBreaker(name = "trainerHoursCircuitBreaker", fallbackMethod = "fallbackAcceptWorkload")
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         var factory = new ActiveMQConnectionFactory();
@@ -52,6 +55,13 @@ public class JmsConfig {
         factory.setPassword(brokerPassword);
 
         return factory;
+    }
+
+    private ActiveMQConnectionFactory fallbackAcceptWorkload(Throwable throwable) {
+        LOGGER.error("Error occurred while calling acceptWorkload method: {}", throwable.getMessage(), throwable);
+
+        LOGGER.warn("Do not use the default factory");
+        return new ActiveMQConnectionFactory();
     }
 
     @Bean
