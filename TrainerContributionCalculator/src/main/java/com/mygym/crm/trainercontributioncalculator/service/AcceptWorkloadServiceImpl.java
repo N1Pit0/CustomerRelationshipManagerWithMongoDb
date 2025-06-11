@@ -21,12 +21,12 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
         this.monthlySummaryService = monthlySummaryService;
     }
 
-    public void acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
+    public boolean acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
         LOGGER.info("Accepting workload for trainer: {}", trainerWorkloadDto.getUserName());
-        switch (trainerWorkloadDto.getActionType()) {
+        return switch (trainerWorkloadDto.getActionType()) {
             case ADD -> addTrainingHours(trainerWorkloadDto);
             case DELETE -> removeTrainingHours(trainerWorkloadDto);
-        }
+        };
     }
 
     private boolean addTrainingHours(TrainerWorkloadDto trainerWorkloadDto) {

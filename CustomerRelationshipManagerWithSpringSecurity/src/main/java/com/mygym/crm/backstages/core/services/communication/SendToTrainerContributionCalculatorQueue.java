@@ -12,7 +12,7 @@ public interface SendToTrainerContributionCalculatorQueue {
 
     Logger LOGGER = LoggerFactory.getLogger(SendToTrainerContributionCalculatorQueue.class);
 
-    @CircuitBreaker(name = "trainerHoursCircuitBreaker", fallbackMethod = "fallbackAcceptWorkload")
+//    @CircuitBreaker(name = "trainerHoursCircuitBreaker", fallbackMethod = "fallbackAcceptWorkload")
     void sendMessage(Object message);
 
     default boolean fallbackAcceptWorkload(TrainerWorkloadDto trainingWorkloadDto, Throwable throwable) {

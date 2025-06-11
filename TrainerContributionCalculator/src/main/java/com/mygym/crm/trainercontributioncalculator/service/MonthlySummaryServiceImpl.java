@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MonthlySummaryServiceImpl implements MonthlySummaryService {
@@ -20,7 +19,6 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         this.monthlySummaryMapper = monthlySummaryMapper;
     }
 
-    @Transactional
     @Override
     public MonthlySummary findOrCreateMonthlySummary(TrainerSummary trainerSummary, TrainerWorkloadDto trainerWorkloadDto) {
         LOGGER.debug("Finding or creating monthly summary for trainer: {}", trainerSummary.getUsername());
@@ -36,7 +34,6 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         return monthlySummary;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public MonthlySummary findMonthlySummary(TrainerSummary trainerSummary, TrainerWorkloadDto trainerWorkloadDto) {
         LOGGER.debug("Finding monthly summary for trainer: {}", trainerSummary.getUsername());

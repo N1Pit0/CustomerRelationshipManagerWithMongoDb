@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableJpaRepositories
+@EnableTransactionManagement
 public class TrainerContributionCalculatorApplication{
 
     public static void main(String[] args) {

@@ -2,6 +2,7 @@ package com.mygym.crm.trainercontributioncalculator.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Table(name = "trainer_summary")
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"monthlySummaries"})
 public class TrainerSummary {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

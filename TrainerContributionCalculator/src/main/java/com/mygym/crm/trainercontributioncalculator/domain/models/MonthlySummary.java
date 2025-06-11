@@ -2,12 +2,14 @@ package com.mygym.crm.trainercontributioncalculator.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "monthly_summary")
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"trainerSummary"})
 public class MonthlySummary {
 
     @Id
