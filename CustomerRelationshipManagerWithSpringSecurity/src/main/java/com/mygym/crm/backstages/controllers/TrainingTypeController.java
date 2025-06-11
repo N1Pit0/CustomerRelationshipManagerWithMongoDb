@@ -8,6 +8,7 @@ import com.mygym.crm.backstages.interfaces.services.TrainingTypeRadOnlyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class TrainingTypeController {
         this.trainingTypeMapper = trainingTypeMapper;
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("")
     @Operation(summary = "List Training Types", description = "Lists all Training Types from database")
     @ApiResponses(value = {

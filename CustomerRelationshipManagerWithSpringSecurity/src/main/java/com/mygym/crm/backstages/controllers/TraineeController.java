@@ -21,6 +21,7 @@ import com.mygym.crm.backstages.interfaces.services.TraineeServiceCommon;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,7 @@ public class TraineeController {
         this.userService = userService;
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/{userName:.+}", produces = "application/json")
     @Operation(summary = "Get a Trainee profile", description = "Gets a single Trainee profile and all its dependencies with specific userName")
     @ApiResponses(value = {
@@ -72,6 +74,7 @@ public class TraineeController {
                 .orElseThrow(() -> new NoResourceException("No resource found for " + userName));
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/{userName:.+}/list-trainee-trainings", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Get Trainings of Trainees", description = "Gets the list of Trainings that are of specific Trainee on given filters as query params")
     @ApiResponses(value = {
@@ -103,6 +106,7 @@ public class TraineeController {
                 .orElseThrow(() -> new NoResourceException("No resource found for " + userName));
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/{userName:.+}/not-assigned-trainers")
     @Operation(summary = "Get Trainers not for Trainees", description = "Gets the list of Trainers that are not teaching specific Trainee")
     @ApiResponses(value = {
@@ -147,6 +151,7 @@ public class TraineeController {
                 HttpStatus.CREATED);
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PutMapping(value = {"/{userName:.+}"}, consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update Trainee user", description = "Updates an existing Trainee Object and save it in the database.")
     @ApiResponses(value = {
@@ -173,6 +178,7 @@ public class TraineeController {
                 .orElseThrow(() -> new ResourceCreationException("could not update Trainee Profile"));
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PutMapping(value = "/{userName:.+}/change-login", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Change password of Trainee user", description = "Changes password of an existing Trainee Object and save it in the database.")
     @ApiResponses(value = {
@@ -198,6 +204,7 @@ public class TraineeController {
         throw new ResourceUpdateException("could not update Trainee Profile");
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @DeleteMapping(value = "/{userName:.+}", produces = "application/json")
     @Operation(summary = "Delete Trainee user", description = "Deletes an existing Trainee Object from the database.")
     @ApiResponses(value = {
@@ -220,6 +227,7 @@ public class TraineeController {
         throw new ResourceCreationException("could not delete Trainee Profile");
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PatchMapping(value = "/{userName:.+}/toggleActive")
     @Operation(summary = "Update Trainee user", description = "Performs an action that lets user turn on and off their active status.")
     @ApiResponses(value = {

@@ -2,6 +2,7 @@ package com.mygym.crm.backstages.controllers;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class CustomLatencyMetricController {
                 .register(meterRegistry);
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/monitor-latency-api")
     public ResponseEntity<String> monitorLatencyApi() {
         return timer.record(() -> {
@@ -36,6 +38,7 @@ public class CustomLatencyMetricController {
         });
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/monitor-latency-query")
     public ResponseEntity<String> monitorLatencyQuery() {
         Random random = new Random();

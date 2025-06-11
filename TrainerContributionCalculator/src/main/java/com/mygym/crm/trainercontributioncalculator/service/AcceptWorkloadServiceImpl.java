@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AcceptWorkloadServiceImpl implements AcceptWorkload {
-    private static final Logger logger = LoggerFactory.getLogger(AcceptWorkloadServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AcceptWorkloadServiceImpl.class);
 
     private final TrainerSummaryService trainerSummaryService;
     private final MonthlySummaryService monthlySummaryService;
@@ -24,7 +24,7 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
 
     @Transactional
     public void acceptWorkload(TrainerWorkloadDto trainerWorkloadDto) {
-        logger.info("Accepting workload for trainer: {}", trainerWorkloadDto.getUserName());
+        LOGGER.info("Accepting workload for trainer: {}", trainerWorkloadDto.getUserName());
         switch (trainerWorkloadDto.getActionType()) {
             case ADD -> addTrainingHours(trainerWorkloadDto);
             case DELETE -> removeTrainingHours(trainerWorkloadDto);
@@ -32,11 +32,11 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
     }
 
     private boolean addTrainingHours(TrainerWorkloadDto trainerWorkloadDto) {
-        logger.debug("Adding training hours for trainer: {}", trainerWorkloadDto.getUserName());
+        LOGGER.debug("Adding training hours for trainer: {}", trainerWorkloadDto.getUserName());
         TrainerSummary trainerSummary = trainerSummaryService.findByUsername(trainerWorkloadDto.getUserName());
 
         if (trainerSummary == null) {
-            logger.debug("Creating new trainer summary for trainer: {}", trainerWorkloadDto.getUserName());
+            LOGGER.debug("Creating new trainer summary for trainer: {}", trainerWorkloadDto.getUserName());
             trainerSummary = trainerSummaryService.createTrainerSummary(trainerWorkloadDto);
         }
 
@@ -46,16 +46,19 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
         trainerSummary.getMonthlySummaries().add(monthlySummary);
 
         trainerSummaryService.updateTrainerSummary(trainerSummary);
-        logger.info("Training hours added successfully for trainer: {}", trainerWorkloadDto.getUserName());
+        String trainerUsername = trainerWorkloadDto.getUserName();
+
+        LOGGER.info("Training hours added successfully for trainer: {}", trainerUsername);
+        LOGGER.debug("Training hours for trainer {} amounts to: {}", trainerUsername, monthlySummary.getTrainingDuration());
         return true;
     }
 
     private boolean removeTrainingHours(TrainerWorkloadDto trainerWorkloadDto) {
-        logger.debug("Removing training hours for trainer: {}", trainerWorkloadDto.getUserName());
+        LOGGER.debug("Removing training hours for trainer: {}", trainerWorkloadDto.getUserName());
         TrainerSummary trainerSummary = trainerSummaryService.findByUsername(trainerWorkloadDto.getUserName());
 
         if (trainerSummary == null) {
-            logger.warn("Trainer summary not found for trainer: {}", trainerWorkloadDto.getUserName());
+            LOGGER.warn("Trainer summary not found for trainer: {}", trainerWorkloadDto.getUserName());
             return false;
         }
 
@@ -63,17 +66,17 @@ public class AcceptWorkloadServiceImpl implements AcceptWorkload {
 
 
         if (monthlySummary == null) {
-            logger.warn("Monthly summary not found for trainer: {}", trainerWorkloadDto.getUserName());
+            LOGGER.warn("Monthly summary not found for trainer: {}", trainerWorkloadDto.getUserName());
             return false;
         }
 
         int updatedDuration = monthlySummary.getTrainingDuration() - trainerWorkloadDto.getTrainingDuration();
 
         if (updatedDuration <= 0) {
-            logger.debug("Removing monthly summary for trainer: {}", trainerWorkloadDto.getUserName());
+            LOGGER.debug("Removing monthly summary for trainer: {}", trainerWorkloadDto.getUserName());
             trainerSummary.getMonthlySummaries().remove(monthlySummary);
         } else {
-            logger.debug("Updating training duration for trainer: {}", trainerWorkloadDto.getUserName());
+            LOGGER.debug("Updating training duration for trainer: {}", trainerWorkloadDto.getUserName());
             monthlySummary.setTrainingDuration(updatedDuration);
         }
 

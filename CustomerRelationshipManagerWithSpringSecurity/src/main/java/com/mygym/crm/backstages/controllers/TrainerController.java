@@ -17,6 +17,7 @@ import com.mygym.crm.backstages.interfaces.services.TrainerServiceCommon;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ public class TrainerController {
         this.mapper = mapper;
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/{userName:.+}", produces = "application/json")
     @Operation(summary = "Get a Trainer profile", description = "Gets a single Trainer profile and all its dependencies with specific userName")
     @ApiResponses(value = {
@@ -68,6 +70,7 @@ public class TrainerController {
                 .orElseThrow(() -> new NoResourceException("No resource found for " + userName));
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/{userName:.+}/list-trainer-trainings")
     @Operation(summary = "Get Trainings of Trainers", description = "Gets the list of Trainings that are of specific Trainers on given filters as query params")
     @ApiResponses(value = {
@@ -118,6 +121,7 @@ public class TrainerController {
                 HttpStatus.CREATED);
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PutMapping(value = {"/{userName:.+}"}, consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update Trainer user", description = "Updates an existing Trainer Object and save it in the database.")
     @ApiResponses(value = {
@@ -144,6 +148,7 @@ public class TrainerController {
                 .orElseThrow(() -> new ResourceCreationException("could not update Trainer Profile"));
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PutMapping(value = "/{userName:.+}/change-login", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Change password of Trainer user", description = "Changes password of an existing Trainer Object and save it in the database.")
     @ApiResponses(value = {
@@ -168,6 +173,7 @@ public class TrainerController {
         throw new ResourceCreationException("could not update Trainer Profile");
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PatchMapping(value = "/{userName:.+}/toggleActive")
     @Operation(summary = "Update Trainer user", description = "Performs an action that lets user turn on and off their active status.")
     @ApiResponses(value = {

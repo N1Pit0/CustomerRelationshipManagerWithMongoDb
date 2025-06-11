@@ -8,6 +8,7 @@ import com.mygym.crm.backstages.interfaces.services.TrainingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -34,6 +35,7 @@ public class TrainingController {
         this.userService = userService;
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(consumes = "application/json")
     @Operation(summary = "Create new Training", description = "Creates new Training and save it in new database")
     @ApiResponses(value = {
