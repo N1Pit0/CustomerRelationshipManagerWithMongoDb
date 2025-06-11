@@ -81,10 +81,10 @@ public class TrainingServiceImpl implements TrainingService {
 
             optionalTraining.ifPresentOrElse(
                     (training) -> {
-                        logger.info("Training with trainingId: {} has been created", training.getId());
                         TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
                         trainingWorkloadDto.setActionType(ADD);
                         sendToTrainerContributionCalculatorQueue.sendMessage(trainingWorkloadDto);
+                        logger.info("Training with trainingId: {} has been created", training.getId());
                     },
                     () -> logger.warn("Training could not be created")
             );

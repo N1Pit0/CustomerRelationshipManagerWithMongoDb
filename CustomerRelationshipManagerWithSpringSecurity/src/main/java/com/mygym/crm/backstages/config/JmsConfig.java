@@ -1,5 +1,6 @@
 package com.mygym.crm.backstages.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -12,13 +13,21 @@ import org.springframework.jms.support.converter.MessageType;
 
 @Configuration
 @EnableJms
+
 public class JmsConfig {
 
     private DiscoveryClient discoveryClient;
 
+    private ObjectMapper objectMapper;
+
     @Autowired
     public void setDiscoveryClient(DiscoveryClient discoveryClient) {
         this.discoveryClient = discoveryClient;
+    }
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -27,6 +36,7 @@ public class JmsConfig {
 
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
+        converter.setObjectMapper(objectMapper);
 
         return converter;
     }

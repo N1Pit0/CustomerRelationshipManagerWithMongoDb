@@ -36,7 +36,6 @@ public class TrainingTypeController {
         this.trainingTypeMapper = trainingTypeMapper;
     }
 
-    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("")
     @Operation(summary = "List Training Types", description = "Lists all Training Types from database")
     @ApiResponses(value = {

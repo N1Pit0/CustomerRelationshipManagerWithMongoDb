@@ -48,11 +48,10 @@ public class TrainingDaoImpl implements TrainingDao {
     @Override
     public Optional<Training> add(Training training) {
         try {
-            logger.info("Creating training with id: {}", training.getId());
 
             entityManager.persist(training);
 
-            logger.info("Successfully created trainer with id: {}", training.getId());
+            logger.info("Creating training with id: {}", training.getId());
 
             return Optional.of(training);
         } catch (PersistenceException e) {
@@ -75,9 +74,7 @@ public class TrainingDaoImpl implements TrainingDao {
                     .setParameter("traineeUsername", traineeUsername)
                     .executeUpdate();
 
-            if (deletedCount > 0) {
-                logger.info("Successfully deleted {} rows", deletedCount);
-            } else {
+            if (deletedCount < 0) {
                 logger.error("Failed to delete Training with traineeUsername: {}", traineeUsername);
             }
 

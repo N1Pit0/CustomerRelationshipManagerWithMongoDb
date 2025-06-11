@@ -3,11 +3,13 @@ package com.mygym.crm.trainercontributioncalculator.communication;
 import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import com.mygym.crm.trainercontributioncalculator.service.AcceptWorkload;
 import com.mygym.crm.trainercontributioncalculator.service.communication.ReceiveFromTrainerContributionCalculatorQueue;
+import jdk.jfr.TransitionTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ReceiveFromTrainerContributionCalculatorQueueImpl implements ReceiveFromTrainerContributionCalculatorQueue {
@@ -21,12 +23,11 @@ public class ReceiveFromTrainerContributionCalculatorQueueImpl implements Receiv
     }
 
     @JmsListener(destination = TRAINER_CONTRIBUTION_CALCULATOR_QUEUE)
-    public void receiveMessage(Object message) {
+    public void receiveMessage(TrainerWorkloadDto  message) {
         LOGGER.info("Receiving message from trainer contribution calculator queue");
 
-        if (message instanceof TrainerWorkloadDto trainerWorkloadDto) {
-            acceptWorkloadService.acceptWorkload(trainerWorkloadDto);
-        }
-        else LOGGER.warn("The message is not a TrainerWorkloadDto instance");
+        LOGGER.debug(message.toString());
+
+        acceptWorkloadService.acceptWorkload(message);
     }
 }

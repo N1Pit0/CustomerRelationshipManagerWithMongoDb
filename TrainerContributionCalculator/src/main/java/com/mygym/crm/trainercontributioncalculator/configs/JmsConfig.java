@@ -1,5 +1,6 @@
 package com.mygym.crm.trainercontributioncalculator.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class JmsConfig {
 
     private DiscoveryClient discoveryClient;
+    private ObjectMapper objectMapper;
 
     private static Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Autowired
     public void setDiscoveryClient(DiscoveryClient discoveryClient) {
@@ -55,6 +62,7 @@ public class JmsConfig {
 
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
+        converter.setObjectMapper(objectMapper);
 
         return converter;
     }
@@ -68,7 +76,7 @@ public class JmsConfig {
         factory.setMessageConverter(jacksonJmsMessageConverter());
         factory.setTransactionManager(transactionManager());
         factory.setErrorHandler(t -> {
-            LOGGER.info("Handling error message {}", t.getMessage());
+            LOGGER.info("Handling error message {}", t.getMessage(), t);
         });
 
         return factory;

@@ -35,7 +35,6 @@ public class TraineeDaoImpl implements TraineeDao {
             logger.info("Creating trainee with userName: {}", trainee.getUserName());
             entityManager.persist(trainee);
 
-            logger.info("Successfully created trainee with userName: {}", trainee.getUserName());
             return Optional.of(trainee);
 
         } catch (PersistenceException e) {
@@ -88,7 +87,6 @@ public class TraineeDaoImpl implements TraineeDao {
                     .setParameter("address", trainee.getAddress())
                     .getSingleResult();
 
-            logger.info("Successfully update trainee with userName: {}", trainee.getUserName());
 
             return Optional.of(updatedTrainee);
 
@@ -110,7 +108,6 @@ public class TraineeDaoImpl implements TraineeDao {
 
             if (trainee != null) {
                 entityManager.remove(trainee);
-                logger.info("Deleted trainee with ID: {}", traineeId);
 
                 return Optional.of(trainee);
 
@@ -135,7 +132,6 @@ public class TraineeDaoImpl implements TraineeDao {
             Trainee trainee = selectWithUserName(userName).orElse(null);
             if (trainee != null) {
                 entityManager.remove(trainee);
-                logger.info("Deleted trainee with userName: {}", userName);
 
                 return Optional.of(trainee);
 
@@ -159,7 +155,6 @@ public class TraineeDaoImpl implements TraineeDao {
             Trainee trainee = entityManager.find(Trainee.class, traineeId);
 
             if (trainee != null) {
-                logger.info("Successfully selected trainee with ID: {}", traineeId);
                 return Optional.of(trainee);
             }
 
@@ -192,7 +187,6 @@ public class TraineeDaoImpl implements TraineeDao {
                     .getSingleResult();
 
             if (trainee != null) {
-                logger.info("Successfully selected trainee with userName: {}", userName);
                 return Optional.of(trainee);
             }
 
@@ -224,7 +218,6 @@ public class TraineeDaoImpl implements TraineeDao {
                     .executeUpdate();
 
             if (affectedRows == 1) {
-                logger.info("Successfully changed password for trainee with userName: {}", userName);
                 return true;
             }
 
@@ -273,10 +266,7 @@ public class TraineeDaoImpl implements TraineeDao {
                     .executeUpdate();
 
             if (affectedRows == 1) {
-                logger.info("Successfully toggled isActive for trainee with userName: {} from: {} to: {}",
-                        userName,
-                        isActive,
-                        newIsActive);
+
                 return true;
             }
 

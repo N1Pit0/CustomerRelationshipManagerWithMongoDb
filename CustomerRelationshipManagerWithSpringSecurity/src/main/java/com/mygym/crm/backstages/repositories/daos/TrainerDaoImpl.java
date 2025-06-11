@@ -37,7 +37,6 @@ public class TrainerDaoImpl implements TrainerDao {
             logger.info("Creating trainer with userName: {}", trainer.getUserName());
             entityManager.persist(trainer);
 
-            logger.info("Successfully created trainer with userName: {}", trainer.getUserName());
 
             return Optional.of(trainer);
 
@@ -75,7 +74,6 @@ public class TrainerDaoImpl implements TrainerDao {
             Trainer trainer = entityManager.find(Trainer.class, trainerId);
 
             if (trainer != null) {
-                logger.info("Successfully selected trainer with ID: {}", trainerId);
                 return Optional.of(trainer);
             }
 
@@ -106,7 +104,6 @@ public class TrainerDaoImpl implements TrainerDao {
                     .getSingleResult();
 
             if (trainer != null) {
-                logger.info("Successfully selected trainer with userName: {}", userName);
                 return Optional.of(trainer);
             }
 
@@ -138,7 +135,6 @@ public class TrainerDaoImpl implements TrainerDao {
                     .executeUpdate();
 
             if (affectedRows == 1) {
-                logger.info("Successfully changed password for trainer with userName: {}", userName);
                 return true;
             }
 
@@ -187,10 +183,7 @@ public class TrainerDaoImpl implements TrainerDao {
                     .executeUpdate();
 
             if (affectedRows == 1) {
-                logger.info("Successfully toggled isActive for trainer with userName: {} from: {} to: {}",
-                        userName,
-                        isActive,
-                        newIsActive);
+
                 return true;
             }
 

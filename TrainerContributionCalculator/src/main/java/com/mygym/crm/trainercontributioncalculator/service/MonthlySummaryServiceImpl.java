@@ -8,33 +8,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MonthlySummaryServiceImpl implements MonthlySummaryService {
     private final MonthlySummaryMapper monthlySummaryMapper;
-    private static final Logger logger = LoggerFactory.getLogger(MonthlySummaryServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MonthlySummaryServiceImpl.class);
 
     @Autowired
     public MonthlySummaryServiceImpl(MonthlySummaryMapper monthlySummaryMapper) {
         this.monthlySummaryMapper = monthlySummaryMapper;
     }
 
+    @Transactional
+    @Override
     public MonthlySummary findOrCreateMonthlySummary(TrainerSummary trainerSummary, TrainerWorkloadDto trainerWorkloadDto) {
-        logger.debug("Finding or creating monthly summary for trainer: {}", trainerSummary.getUsername());
+        LOGGER.debug("Finding or creating monthly summary for trainer: {}", trainerSummary.getUsername());
         MonthlySummary monthlySummary = findMonthlySummary(trainerSummary, trainerWorkloadDto);
 
         if (monthlySummary == null) {
             monthlySummary = monthlySummaryMapper.toMonthlySummary(trainerWorkloadDto);
             monthlySummary.setTrainerSummary(trainerSummary);
             trainerSummary.getMonthlySummaries().add(monthlySummary);
-            logger.info("New monthly summary created for trainer: {}", trainerSummary.getUsername());
+            LOGGER.info("New monthly summary created for trainer: {}", trainerSummary.getUsername());
         }
 
         return monthlySummary;
     }
 
+    @Transactional(readOnly = true)
+    @Override
     public MonthlySummary findMonthlySummary(TrainerSummary trainerSummary, TrainerWorkloadDto trainerWorkloadDto) {
-        logger.debug("Finding monthly summary for trainer: {}", trainerSummary.getUsername());
+        LOGGER.debug("Finding monthly summary for trainer: {}", trainerSummary.getUsername());
         MonthlySummary monthlySummary = trainerSummary.getMonthlySummaries().stream()
                 .filter(summary -> summary.getSummaryYear() == trainerWorkloadDto.getTrainingDate().getYear())
                 .filter(summary -> summary.getSummaryMonth() == monthlySummaryMapper.integerToEnum(trainerWorkloadDto.getTrainingDate().getMonthValue()))
@@ -42,9 +47,9 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
                 .orElse(null);
 
         if (monthlySummary != null) {
-            logger.debug("Monthly summary found for trainer: {}", trainerSummary.getUsername());
+            LOGGER.debug("Monthly summary found for trainer: {}", trainerSummary.getUsername());
         } else {
-            logger.debug("Monthly summary not found for trainer: {}", trainerSummary.getUsername());
+            LOGGER.debug("Monthly summary not found for trainer: {}", trainerSummary.getUsername());
         }
 
         return monthlySummary;

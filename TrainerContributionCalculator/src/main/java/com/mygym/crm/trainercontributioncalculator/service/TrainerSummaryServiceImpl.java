@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TrainerSummaryServiceImpl implements TrainerSummaryService {
-    private static final Logger logger = LoggerFactory.getLogger(TrainerSummaryServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainerSummaryServiceImpl.class);
 
     private final TrainingRepository trainingRepository;
     private final TrainerSummaryMapper trainerSummaryMapper;
@@ -24,29 +24,34 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
     }
 
     @Transactional
+    @Override
     public TrainerSummary createTrainerSummary(TrainerWorkloadDto trainerWorkloadDto) {
-        logger.debug("Creating trainer summary for trainer: {}", trainerWorkloadDto.getUserName());
+        LOGGER.debug("Creating trainer summary for trainer: {}", trainerWorkloadDto.getUserName());
         TrainerSummary trainerSummary = trainerSummaryMapper.toTrainerSummary(trainerWorkloadDto);
-        TrainerSummary savedTrainerSummary = trainingRepository.save(trainerSummary);
-        logger.info("Trainer summary created for trainer: {}", savedTrainerSummary.getUsername());
+        LOGGER.debug("created trainer summary: {}", trainerSummary);
+        TrainerSummary savedTrainerSummary = trainingRepository.save(trainerSummary); // The exception is thrown here!!!
+        LOGGER.info("Trainer summary created for trainer: {}", savedTrainerSummary.getUsername());
         return savedTrainerSummary;
     }
 
     @Transactional
+    @Override
     public TrainerSummary updateTrainerSummary(TrainerSummary trainerSummary) {
-        logger.debug("Updating trainer summary for trainer: {}", trainerSummary.getUsername());
+        LOGGER.debug("Updating trainer summary for trainer: {}", trainerSummary.getUsername());
         TrainerSummary updatedTrainerSummary = trainingRepository.save(trainerSummary);
-        logger.info("Trainer summary updated for trainer: {}", updatedTrainerSummary.getUsername());
+        LOGGER.info("Trainer summary updated for trainer: {}", updatedTrainerSummary.getUsername());
         return updatedTrainerSummary;
     }
 
+    @Transactional(readOnly = true)
+    @Override
     public TrainerSummary findByUsername(String username) {
-        logger.debug("Finding trainer summary by username: {}", username);
+        LOGGER.debug("Finding trainer summary by username: {}", username);
         TrainerSummary trainerSummary = trainingRepository.findByUsername(username);
         if (trainerSummary != null) {
-            logger.debug("Trainer summary found for username: {}", username);
+            LOGGER.debug("Trainer summary found for username: {}", username);
         } else {
-            logger.debug("Trainer summary not found for username: {}", username);
+            LOGGER.debug("Trainer summary not found for username: {}", username);
         }
         return trainerSummary;
     }
