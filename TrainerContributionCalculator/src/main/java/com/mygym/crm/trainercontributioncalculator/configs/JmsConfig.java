@@ -1,8 +1,8 @@
 package com.mygym.crm.trainercontributioncalculator.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,21 +12,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.connection.JmsTransactionManager;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
-import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @EnableJms
 public class JmsConfig {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
     private DiscoveryClient discoveryClient;
     private ObjectMapper objectMapper;
-
-    private static Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
 
     @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
@@ -76,33 +72,11 @@ public class JmsConfig {
     }
 
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-        var factory = new DefaultJmsListenerContainerFactory();
-
-        factory.setConnectionFactory(connectionFactory());
-        factory.setConcurrency("1-5");
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(jacksonJmsMessageConverter());
-        factory.setTransactionManager(transactionManager());
-        factory.setErrorHandler(t -> {
-            LOGGER.info("Handling error message {}", t.getMessage(), t);
-        });
-
         return factory;
     }
 
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new JmsTransactionManager(connectionFactory());
-    }
-
-    @Bean
-    public JmsTemplate jmsTemplate(){
-        var jmsTemplate = new JmsTemplate(connectionFactory());
-
-        jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
-        jmsTemplate.setDeliveryPersistent(true);
-        jmsTemplate.setSessionTransacted(true);
-
-        return jmsTemplate;
-    }
 }

@@ -24,6 +24,8 @@ public class TrainerWorkloadDto implements Serializable {
         this.actionType = actionType;
     }
 
+    public TrainerWorkloadDto(){}
+
     private String userName;
 
     private String firstName;
