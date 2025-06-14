@@ -2,7 +2,9 @@ package com.mygym.crm.backstages.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,6 +12,8 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "training_table")
+@EqualsAndHashCode(exclude = {"trainingType", "trainee", "trainer"})
+@ToString(exclude = {"trainingType", "trainee", "trainer"})
 @NoArgsConstructor
 public class Training implements Serializable {
 
