@@ -1,7 +1,6 @@
 package com.mygym.crm.backstages.core.services.communication;
 
 import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +11,7 @@ public interface TrainerContributionQueueSender {
 
     Logger LOGGER = LoggerFactory.getLogger(TrainerContributionQueueSender.class);
 
-//    @CircuitBreaker(name = "trainerHoursCircuitBreaker", fallbackMethod = "fallbackAcceptWorkload")
-    void sendMessage(Object message);
+    void sendMessage(TrainerWorkloadDto message);
 
     default boolean fallbackAcceptWorkload(TrainerWorkloadDto trainingWorkloadDto, Throwable throwable) {
         LOGGER.error("Error occurred while sending a message to: {}. The error is {}",

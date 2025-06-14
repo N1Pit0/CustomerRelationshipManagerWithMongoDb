@@ -69,7 +69,7 @@ public class UserService {
             password.append(c);
         }
 
-        this.password = password.toString();
+        this.password = password.toString();// This might be a vulnerability issue
         return encodePassword(password.toString());
     }
 

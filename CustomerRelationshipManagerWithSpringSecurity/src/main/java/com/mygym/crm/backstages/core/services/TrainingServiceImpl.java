@@ -30,7 +30,7 @@ import static com.mygym.crm.sharedmodule.ActionEnum.ADD;
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TrainingServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrainingServiceImpl.class);
     private final TrainingDao trainingDao;
     private final TrainerDao trainerDao;
     private final TraineeDao traineeDao;
@@ -55,18 +55,18 @@ public class TrainingServiceImpl implements TrainingService {
 
         try {
             Training newTraining = new Training();
-            logger.info("New Training, populating it with given traineeDTO");
+            LOGGER.info("New Training, populating it with given traineeDTO");
 
             newTraining.setTrainingName(trainingDto.getTrainingName());
             newTraining.setTrainingDate(trainingDto.getTrainingDate());
             newTraining.setTrainingDuration(trainingDto.getTrainingDuration());
 
             Trainer trainer = trainerDao.select(trainingDto.getTrainerId()).orElseThrow(() -> {
-                logger.error("Trainer with id {} not found", trainingDto.getTrainerId());
+                LOGGER.error("Trainer with id {} not found", trainingDto.getTrainerId());
                 return new NoTrainerException("Could not found the Trainer");
             });
             Trainee trainee = traineeDao.select(trainingDto.getTraineeId()).orElseThrow(() -> {
-                logger.error("Trainee with id {} not found", trainingDto.getTraineeId());
+                LOGGER.error("Trainee with id {} not found", trainingDto.getTraineeId());
                 return new NoTrainerException("Could not found the Trainee");
             });
 
@@ -76,7 +76,7 @@ public class TrainingServiceImpl implements TrainingService {
             newTraining.setTrainee(trainee);
             newTraining.setTrainingType(trainingType);
 
-            logger.info("Trying to new create training");
+            LOGGER.info("Trying to new create training");
             Optional<Training> optionalTraining = trainingDao.add(newTraining);
 
             optionalTraining.ifPresentOrElse(
@@ -84,9 +84,9 @@ public class TrainingServiceImpl implements TrainingService {
                         TrainerWorkloadDto trainingWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);
                         trainingWorkloadDto.setActionType(ADD);
                         trainerContributionQueueSender.sendMessage(trainingWorkloadDto);
-                        logger.info("Training with trainingId: {} has been created", training.getId());
+                        LOGGER.info("Training with trainingId: {} has been created", training.getId());
                     },
-                    () -> logger.warn("Training could not be created")
+                    () -> LOGGER.warn("Training could not be created")
             );
 
             return optionalTraining;
@@ -105,9 +105,9 @@ public class TrainingServiceImpl implements TrainingService {
             int deletedRows = trainingDao.deleteWithTraineeUsername(traineeUsername);
 
             if (deletedRows > 0) {
-                logger.info("deleted {} number of rows for Training with trainee userName: {}", deletedRows, traineeUsername);
+                LOGGER.info("deleted {} number of rows for Training with trainee userName: {}", deletedRows, traineeUsername);
             } else {
-                logger.warn("Could not delete the rows for Training for given trainee userName: {}", traineeUsername);
+                LOGGER.warn("Could not delete the rows for Training for given trainee userName: {}", traineeUsername);
             }
 
             return deletedRows;
@@ -123,7 +123,7 @@ public class TrainingServiceImpl implements TrainingService {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to find Training with ID: {}", id);
+            LOGGER.info("Trying to find Training with ID: {}", id);
 
             Optional<Training> trainingOptional = trainingDao.select(id);
 
@@ -132,9 +132,9 @@ public class TrainingServiceImpl implements TrainingService {
                         training.getTrainee().getUserId();
                         training.getTrainer().getUserId();
                         training.getTrainingType().getTrainingTypeId();
-                        logger.info("Found Training with ID: {}", id);
+                        LOGGER.info("Found Training with ID: {}", id);
                     },
-                    () -> logger.warn("No training found with ID: {}", id)
+                    () -> LOGGER.warn("No training found with ID: {}", id)
             );
 
             return trainingOptional;
