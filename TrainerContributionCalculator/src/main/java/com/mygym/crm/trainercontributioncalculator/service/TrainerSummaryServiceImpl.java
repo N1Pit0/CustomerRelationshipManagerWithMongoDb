@@ -52,6 +52,7 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
         TrainerSummary trainerSummary = trainerSummaryRepository.findByUsername(username);
         if (trainerSummary != null) {
             LOGGER.debug("Trainer summary found for username: {}", username);
+            trainerSummary.getMonthlySummaries().size();
         } else {
             LOGGER.debug("Trainer summary not found for username: {}", username);
         }

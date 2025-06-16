@@ -35,7 +35,7 @@ public abstract class User implements Serializable {
     @Column(nullable = false, name = "enabled")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Authorities authorities;
 
 }

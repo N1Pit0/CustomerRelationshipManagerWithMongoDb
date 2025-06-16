@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true, exclude = {"trainings"})
@@ -24,7 +25,7 @@ public class Trainer extends User {
     private TrainingType trainingType;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Training> trainings;
+    private Set<Training> trainings = new HashSet<>();
 
 }
 

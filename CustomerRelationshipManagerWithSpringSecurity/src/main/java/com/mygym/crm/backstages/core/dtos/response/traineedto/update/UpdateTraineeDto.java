@@ -4,6 +4,7 @@ import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapUpdateT
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -18,5 +19,5 @@ public class UpdateTraineeDto {
 
     private Boolean isActive;
 
-    private Set<MapUpdateTrainerDto> trainers;
+    private Set<MapUpdateTrainerDto> trainers = new HashSet<>();
 }

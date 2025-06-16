@@ -34,7 +34,7 @@
             <AppenderRef ref="Console"/>
         </Logger>
 
-        <Logger name="com.mygym.crm.backstages.core.services" level="info" additivity="false">
+        <Logger name="com.mygym.crm.backstages.core.services" level="debug" additivity="false">
             <AppenderRef ref="FileLoggerServices"/>
         </Logger>
 

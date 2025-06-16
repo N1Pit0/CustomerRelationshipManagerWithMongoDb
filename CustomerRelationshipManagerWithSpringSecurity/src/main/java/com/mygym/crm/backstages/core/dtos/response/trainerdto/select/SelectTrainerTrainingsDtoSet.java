@@ -4,12 +4,13 @@ import com.mygym.crm.backstages.core.dtos.response.trainingtypedto.select.Select
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 public class SelectTrainerTrainingsDtoSet {
 
-    private Set<SelectTrainerTrainingsDto> trainerTrainings;
+    private Set<SelectTrainerTrainingsDto> trainerTrainings = new HashSet<>();
 
     @Data
     public static class SelectTrainerTrainingsDto {

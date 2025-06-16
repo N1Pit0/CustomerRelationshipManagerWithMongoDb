@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,9 +26,9 @@ public class TrainingType implements Serializable {
     @Column(nullable = false, unique = true)
     private String trainingTypeName;
 
-    @OneToMany(mappedBy = "trainingType")
-    private Set<Trainer> trainers;
+    @OneToMany(mappedBy = "trainingType", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Trainer> trainers = new HashSet<>();
 
-    @OneToMany(mappedBy = "trainingType")
-    private Set<Training> trainings;
+    @OneToMany(mappedBy = "trainingType", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<Training> trainings = new HashSet<>();
 }

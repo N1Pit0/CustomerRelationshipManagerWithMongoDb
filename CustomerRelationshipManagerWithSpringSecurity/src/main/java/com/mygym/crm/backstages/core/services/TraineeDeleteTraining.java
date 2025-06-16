@@ -1,7 +1,6 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.services.communication.TrainerContributionQueueSender;
-import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Training;
@@ -12,17 +11,22 @@ import com.mygym.crm.sharedmodule.ActionEnum;
 import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class TraineeDeleteTraining extends TraineeServiceDecorator{
 
     private final TrainerContributionQueueSender queueSender;
     private final TrainerMapper trainerMapper;
     private final static Logger LOGGER = LoggerFactory.getLogger(TraineeDeleteTraining.class);
 
-    public TraineeDeleteTraining(TraineeServiceCommon service, TrainerContributionQueueSender queueSender, TrainerMapper trainerMapper) {
+    @Autowired
+    public TraineeDeleteTraining(@Qualifier("traineeServiceImplCommon") TraineeServiceCommon service, TrainerContributionQueueSender queueSender, TrainerMapper trainerMapper) {
         super(service);
         this.queueSender = queueSender;
         this.trainerMapper = trainerMapper;
@@ -44,6 +48,7 @@ public class TraineeDeleteTraining extends TraineeServiceDecorator{
 
     @Override
     public Optional<Trainee> deleteWithUserName(String userName) {
+        LOGGER.debug("Trying to delete Trainee with name {}", userName);
         Optional<Trainee> OptionalTrainee = super.getByUserName(userName);
 
         Trainee trainee = OptionalTrainee.orElseThrow( () -> {
@@ -60,16 +65,7 @@ public class TraineeDeleteTraining extends TraineeServiceDecorator{
 
     private void sendDeleteTraineeToQueue(Trainee trainee) {
 
-        Optional<Set<Training>> optionalTraineeSet = super.getTraineeTrainings(trainee.getUserName(),
-                null, null, null, null);
-
-        Set<Training> trainingSet = optionalTraineeSet.orElseThrow(() -> {
-            LOGGER.error("Trainings not found for trainee {}", trainee.getUserName());
-
-            return new NoTrainingException("Trainings not found for trainee " + trainee.getUserName());
-        });
-
-        trainingSet.forEach(training -> {
+        trainee.getTrainings().forEach(training -> {
             LOGGER.debug("Mapping training {} to TrainerWorkLoadDto", training);
 
             TrainerWorkloadDto trainerWorkloadDto = trainerMapper.mapTrainingToTrainerWorkloadDto(training);

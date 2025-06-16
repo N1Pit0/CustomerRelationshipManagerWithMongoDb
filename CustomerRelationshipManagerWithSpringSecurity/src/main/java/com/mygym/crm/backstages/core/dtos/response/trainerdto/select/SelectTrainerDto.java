@@ -3,6 +3,7 @@ package com.mygym.crm.backstages.core.dtos.response.trainerdto.select;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.mapping.MapSelectTraineeDto;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -16,5 +17,5 @@ public class SelectTrainerDto {
 
     private Boolean isActive;
 
-    private Set<MapSelectTraineeDto> trainees;
+    private Set<MapSelectTraineeDto> trainees = new HashSet<>();
 }

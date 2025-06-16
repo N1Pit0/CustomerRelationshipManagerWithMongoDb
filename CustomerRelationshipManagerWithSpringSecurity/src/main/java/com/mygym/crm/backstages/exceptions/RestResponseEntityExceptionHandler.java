@@ -32,7 +32,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-        String bodyOfErrorResponse = "Argument or State of resource hase a illegal value.";
+        String bodyOfErrorResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfErrorResponse,
                 new HttpHeaders(), HttpStatusCode.valueOf(409), request);
     }

@@ -13,16 +13,14 @@ import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
-import com.mygym.crm.backstages.exceptions.custom.NoResourceException;
-import com.mygym.crm.backstages.exceptions.custom.NoTraineeException;
-import com.mygym.crm.backstages.exceptions.custom.ResourceCreationException;
-import com.mygym.crm.backstages.exceptions.custom.ResourceUpdateException;
+import com.mygym.crm.backstages.exceptions.custom.*;
 import com.mygym.crm.backstages.interfaces.services.TraineeServiceCommon;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +38,7 @@ public class TraineeController {
     private TraineeMapper mapper;
 
     @Autowired
-    public void setTraineeService(TraineeServiceCommon traineeService) {
+    public void setTraineeService(@Qualifier("traineeDeleteTraining") TraineeServiceCommon traineeService) {
         this.traineeService = traineeService;
     }
 
@@ -75,7 +73,7 @@ public class TraineeController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @GetMapping(value = "/{userName:.+}/list-trainee-trainings", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/{userName:.+}/list-trainee-trainings", produces = "application/json")
     @Operation(summary = "Get Trainings of Trainees", description = "Gets the list of Trainings that are of specific Trainee on given filters as query params")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched the list of Trainings"),
@@ -107,7 +105,7 @@ public class TraineeController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @GetMapping(value = "/{userName:.+}/not-assigned-trainers")
+    @GetMapping(value = "/{userName:.+}/not-assigned-trainers", produces = "application/json")
     @Operation(summary = "Get Trainers not for Trainees", description = "Gets the list of Trainers that are not teaching specific Trainee")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully fetched the list of Trainers"),
@@ -179,7 +177,7 @@ public class TraineeController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @PutMapping(value = "/{userName:.+}/change-login", consumes = "application/json", produces = "application/json")
+    @PatchMapping(value = "/{userName:.+}/change-login", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Change password of Trainee user", description = "Changes password of an existing Trainee Object and save it in the database.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully changed the password of user"),
@@ -224,7 +222,7 @@ public class TraineeController {
             return new ResponseEntity<>(HttpStatus.valueOf(204));
         }
 
-        throw new ResourceCreationException("could not delete Trainee Profile");
+        throw new ResourceDeletionException("could not delete Trainee Profile");
     }
 
     @SecurityRequirement(name = "BearerAuth")

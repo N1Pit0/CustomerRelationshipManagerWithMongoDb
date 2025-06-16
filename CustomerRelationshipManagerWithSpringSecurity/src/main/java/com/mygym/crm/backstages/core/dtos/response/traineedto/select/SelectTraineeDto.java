@@ -4,6 +4,7 @@ import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapSelectT
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -18,5 +19,5 @@ public class SelectTraineeDto {
 
     private Boolean isActive;
 
-    private Set<MapSelectTrainerDto> trainers;
+    private Set<MapSelectTrainerDto> trainers = new HashSet<>();
 }

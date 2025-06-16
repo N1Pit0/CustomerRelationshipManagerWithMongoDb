@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class TraineeServiceDecorator implements TraineeServiceCommon {
 
-    private TraineeServiceCommon traineeService;
+    private final TraineeServiceCommon traineeService;
 
     public TraineeServiceDecorator(TraineeServiceCommon traineeService) {
         this.traineeService = traineeService;

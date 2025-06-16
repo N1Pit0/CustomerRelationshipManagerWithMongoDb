@@ -4,7 +4,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:postgresql://${postgres_server_ip_port}}/CustomerRelationshipManager
+    url: jdbc:postgresql://${postgres_server_ip_port}/CustomerRelationshipManager
     username: ${postgres_user}
     password: ${postgres_password}
     driver-class-name: org.postgresql.Driver
