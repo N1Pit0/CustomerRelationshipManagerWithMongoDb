@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TrainerSummaryServiceImpl implements TrainerSummaryService {
@@ -24,7 +22,6 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
         this.trainerSummaryMapper = trainerSummaryMapper;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public TrainerSummary createTrainerSummary(TrainerWorkloadDto trainerWorkloadDto) {
         LOGGER.debug("Mapping trainerWorkloadDto to trainerSummary for trainer: {}", trainerWorkloadDto.getUserName());
@@ -36,7 +33,6 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
         return savedTrainerSummary;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public TrainerSummary updateTrainerSummary(TrainerSummary trainerSummary) {
         LOGGER.debug("Updating trainer summary for trainer: {}", trainerSummary.getUsername());
@@ -45,7 +41,6 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
         return updatedTrainerSummary;
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     @Override
     public TrainerSummary findByUsername(String username) {
         LOGGER.debug("Finding trainer summary by username: {}", username);

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MonthlySummaryServiceImpl implements MonthlySummaryService {
-    private final MonthlySummaryMapper monthlySummaryMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(MonthlySummaryServiceImpl.class);
+    private final MonthlySummaryMapper monthlySummaryMapper;
 
     @Autowired
     public MonthlySummaryServiceImpl(MonthlySummaryMapper monthlySummaryMapper) {
@@ -26,7 +26,6 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
 
         if (monthlySummary == null) {
             monthlySummary = monthlySummaryMapper.toMonthlySummary(trainerWorkloadDto);
-            monthlySummary.setTrainerSummary(trainerSummary);
             trainerSummary.getMonthlySummaries().add(monthlySummary);
             LOGGER.info("New monthly summary created for trainer: {}", trainerSummary.getUsername());
         }

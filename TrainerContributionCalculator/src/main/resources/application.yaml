@@ -2,19 +2,11 @@ spring:
   application:
     name: trainer-contribution-calculator
 
-  datasource:
-    url: jdbc:h2:mem:trainer-contribution-calculator-db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-  h2:
-    console:
-      enabled: true
+  data:
+    mongodb:
+      uri: mongodb+srv://${mongo_user}:${mongo_password}@clusterforlearning.6xlkro2.mongodb.net/?retryWrites=true&w=majority&appName=ClusterForLearning
+      database: trainer_contribution_db
+      auto-index-creation: true
 
 server:
   port: 7575

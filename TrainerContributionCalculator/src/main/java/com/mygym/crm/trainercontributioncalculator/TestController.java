@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    private AcceptWorkload acceptWorkload;
     private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
+    private AcceptWorkload acceptWorkload;
 
     @Autowired
     public void setAcceptWorkload(AcceptWorkload acceptWorkload) {
@@ -25,7 +25,7 @@ public class TestController {
     @GetMapping("/test")
     public ResponseEntity<String> testController(@RequestBody TrainerWorkloadDto trainerWorkloadDto) {
         LOGGER.info("Testing workload : {}", trainerWorkloadDto);
-        if(acceptWorkload.acceptWorkload(trainerWorkloadDto)){
+        if (acceptWorkload.acceptWorkload(trainerWorkloadDto)) {
             LOGGER.info("Workload accepted");
             return new ResponseEntity<>("Workload accepted", HttpStatus.OK);
         }

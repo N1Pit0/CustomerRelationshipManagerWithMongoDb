@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrainerContributionQueueReceiverImpl implements TrainerContributionQueueReceiver {
 
-    private final AcceptWorkload acceptWorkloadService;
     private static final Logger LOGGER = LoggerFactory.getLogger(TrainerContributionQueueReceiverImpl.class);
+    private final AcceptWorkload acceptWorkloadService;
 
     @Autowired
     public TrainerContributionQueueReceiverImpl(AcceptWorkload acceptWorkloadService) {
@@ -21,7 +21,7 @@ public class TrainerContributionQueueReceiverImpl implements TrainerContribution
     }
 
     @JmsListener(destination = TRAINER_CONTRIBUTION_CALCULATOR_QUEUE)
-    public void receiveMessage(TrainerWorkloadDto  message) {
+    public void receiveMessage(TrainerWorkloadDto message) {
         LOGGER.info("Receiving message from trainer contribution calculator queue");
 
         LOGGER.debug(message.toString());

@@ -8,14 +8,15 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface MonthlySummaryMapper {
+
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "summaryYear", expression = "java(trainerWorkloadDto.getTrainingDate().getYear())")
     @Mapping(target = "summaryMonth", expression = "java(integerToEnum(trainerWorkloadDto.getTrainingDate().getMonthValue()))")
     @Mapping(target = "trainingDuration", constant = "0")
-    @Mapping(target = "trainerSummary", ignore = true)
     MonthlySummary toMonthlySummary(TrainerWorkloadDto trainerWorkloadDto);
 
     default MonthEnum integerToEnum(Integer integer) {
-        return switch (integer){
+        return switch (integer) {
             case 1 -> MonthEnum.JANUARY;
             case 2 -> MonthEnum.FEBRUARY;
             case 3 -> MonthEnum.MARCH;
@@ -29,5 +30,6 @@ public interface MonthlySummaryMapper {
             case 11 -> MonthEnum.NOVEMBER;
             case 12 -> MonthEnum.DECEMBER;
             default -> null;
-        };    }
+        };
+    }
 }

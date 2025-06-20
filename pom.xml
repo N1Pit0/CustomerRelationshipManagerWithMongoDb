@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mygym.crm</groupId>
-    <artifactId>customer-relationship-manager-with-activemq</artifactId>
+    <artifactId>customer-relationship-manager-with-mongodb</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 

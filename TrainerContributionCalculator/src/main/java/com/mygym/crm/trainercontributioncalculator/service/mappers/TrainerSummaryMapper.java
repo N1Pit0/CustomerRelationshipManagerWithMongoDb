@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 public interface TrainerSummaryMapper {
 
     @Mapping(target = "username", source = "userName")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "monthlySummaries", ignore = true)
     TrainerSummary toTrainerSummary(TrainerWorkloadDto trainerWorkloadDto);
 }
 
