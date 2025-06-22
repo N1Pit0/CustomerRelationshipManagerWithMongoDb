@@ -8,6 +8,8 @@ public interface TrainerSummaryService {
 
     TrainerSummary updateTrainerSummary(TrainerSummary trainerSummary);
 
+    TrainerSummary updateTrainerSummaryByUsername(TrainerSummary trainerSummary, String username);
+
     TrainerSummary findByUsername(String username);
 
 }

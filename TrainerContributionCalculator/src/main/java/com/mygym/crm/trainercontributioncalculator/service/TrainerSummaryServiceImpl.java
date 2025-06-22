@@ -42,12 +42,17 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
     }
 
     @Override
+    public TrainerSummary updateTrainerSummaryByUsername(TrainerSummary trainerSummary, String username) {
+        TrainerSummary trainerSummaryByUsername = trainerSummaryRepository.findByUsername(username);
+        return updateTrainerSummary(trainerSummaryByUsername);
+    }
+
+    @Override
     public TrainerSummary findByUsername(String username) {
         LOGGER.debug("Finding trainer summary by username: {}", username);
         TrainerSummary trainerSummary = trainerSummaryRepository.findByUsername(username);
         if (trainerSummary != null) {
             LOGGER.debug("Trainer summary found for username: {}", username);
-            trainerSummary.getMonthlySummaries().size();
         } else {
             LOGGER.debug("Trainer summary not found for username: {}", username);
         }

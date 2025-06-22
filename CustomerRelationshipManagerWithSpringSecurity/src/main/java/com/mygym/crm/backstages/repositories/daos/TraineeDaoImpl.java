@@ -11,8 +11,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
+import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -31,14 +33,16 @@ public class TraineeDaoImpl implements TraineeDao {
     public Optional<Trainee> create(Trainee trainee) {
         checkTrainee(trainee, Trainee.class);
 
+
         try {
             logger.info("Creating trainee with userName: {}", trainee.getUserName());
             entityManager.persist(trainee);
 
             return Optional.of(trainee);
 
-        } catch (PersistenceException e) {
+        } catch (HibernateException e) {
             logger.error(e.getMessage());
+//            throw SessionFactoryUtils.convertHibernateAccessException(e);
             throw new ResourceCreationException(e.getMessage());
         }
 

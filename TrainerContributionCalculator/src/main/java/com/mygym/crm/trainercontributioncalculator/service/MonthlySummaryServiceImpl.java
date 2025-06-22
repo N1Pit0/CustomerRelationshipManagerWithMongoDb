@@ -26,7 +26,6 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
 
         if (monthlySummary == null) {
             monthlySummary = monthlySummaryMapper.toMonthlySummary(trainerWorkloadDto);
-            trainerSummary.getMonthlySummaries().add(monthlySummary);
             LOGGER.info("New monthly summary created for trainer: {}", trainerSummary.getUsername());
         }
 
@@ -38,7 +37,9 @@ public class MonthlySummaryServiceImpl implements MonthlySummaryService {
         LOGGER.debug("Finding monthly summary for trainer: {}", trainerSummary.getUsername());
         MonthlySummary monthlySummary = trainerSummary.getMonthlySummaries().stream()
                 .filter(summary -> summary.getSummaryYear() == trainerWorkloadDto.getTrainingDate().getYear())
-                .filter(summary -> summary.getSummaryMonth() == monthlySummaryMapper.integerToEnum(trainerWorkloadDto.getTrainingDate().getMonthValue()))
+                .filter(summary -> summary.getSummaryMonth()
+                        .equals(monthlySummaryMapper.integerToEnum(trainerWorkloadDto.getTrainingDate().getMonthValue()))
+                )
                 .findFirst()
                 .orElse(null);
 

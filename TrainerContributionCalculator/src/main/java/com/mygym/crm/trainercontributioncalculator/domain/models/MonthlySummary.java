@@ -1,17 +1,15 @@
 package com.mygym.crm.trainercontributioncalculator.domain.models;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"trainingDuration"})
 public class MonthlySummary {
-
-    @Id
-    private String id;
 
     private Integer summaryYear;
 

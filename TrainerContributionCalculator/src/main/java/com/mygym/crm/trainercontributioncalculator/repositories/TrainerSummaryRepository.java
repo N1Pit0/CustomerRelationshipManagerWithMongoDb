@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TrainerSummaryRepository extends MongoRepository<TrainerSummary, Integer> {
     TrainerSummary findByUsername(String username);
+
 }

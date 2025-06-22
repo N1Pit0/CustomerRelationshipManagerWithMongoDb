@@ -4,12 +4,14 @@ import com.mygym.crm.backstages.domain.models.Authorities;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@EqualsAndHashCode(exclude = {"password", "isActive", "authorities"})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "user_table")
