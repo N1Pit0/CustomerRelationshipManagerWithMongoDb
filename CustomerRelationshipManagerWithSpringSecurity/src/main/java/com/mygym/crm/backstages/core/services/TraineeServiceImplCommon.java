@@ -1,6 +1,7 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.traineedto.TraineeDto;
+import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.domain.models.Authorities;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
@@ -9,6 +10,7 @@ import com.mygym.crm.backstages.exceptions.custom.NoTraineeException;
 import com.mygym.crm.backstages.interfaces.daorepositories.TraineeDao;
 import com.mygym.crm.backstages.interfaces.services.AuthoritiesService;
 import com.mygym.crm.backstages.interfaces.services.TraineeServiceCommon;
+import lombok.Getter;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +28,20 @@ import java.util.UUID;
 @Service
 public class TraineeServiceImplCommon implements TraineeServiceCommon {
 
-    private static final Logger logger = LoggerFactory.getLogger(TraineeServiceImplCommon.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TraineeServiceImplCommon.class);
     private final TraineeDao traineeDao;
     private final UserService userService;
     private final AuthoritiesService authoritiesService;
 
+    @Getter
+    private final TraineeMapper traineeMapper;
+
     @Autowired
-    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserService userService, AuthoritiesService authoritiesService) {
+    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserService userService, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
         this.traineeDao = traineeDao;
         this.userService = userService;
         this.authoritiesService = authoritiesService;
+        this.traineeMapper = traineeMapper;
     }
 
     @Transactional
@@ -45,16 +51,15 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            Trainee newTrainee = map(traineeDto);
-            newTrainee.setIsActive(true);
+            Trainee newTrainee = traineeMapper.traineeDtoToCommonTrainee(traineeDto);
 
-            logger.info("Trying to generate new password while attempting to create a new trainee");
+            LOGGER.info("Trying to generate new password while attempting to create a new trainee");
             newTrainee.setPassword(userService.generatePassword());
 
-            logger.info("Trying to generate new username while attempting to create a new trainee");
+            LOGGER.info("Trying to generate new username while attempting to create a new trainee");
             newTrainee.setUserName(userService.generateUserName(traineeDto));
 
-            logger.info("Trying to create new trainee with UserName: {}", newTrainee.getUserName());
+            LOGGER.info("Trying to create new trainee with UserName: {}", newTrainee.getUserName());
             Optional<Trainee> optionalTrainee = traineeDao.create(newTrainee);
 
             optionalTrainee.ifPresentOrElse(
@@ -65,9 +70,9 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
                         userauthorities.setUser(newTrainee);
                         authoritiesService.createAuthority(userauthorities);
 
-                        logger.info("trainee with userName: {} has been created", trainee.getUserName());
+                        LOGGER.info("trainee with userName: {} has been created", trainee.getUserName());
                     },
-                    () -> logger.warn("trainee with userName: {} was not created", newTrainee.getUserName())
+                    () -> LOGGER.warn("trainee with userName: {} was not created", newTrainee.getUserName())
             );
 
             return optionalTrainee;
@@ -84,12 +89,12 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
 
         try {
             Trainee oldTrainee = getById(id).orElseThrow(() -> {
-                logger.error("Trainee with ID: {} not found", id);
+                LOGGER.error("Trainee with ID: {} not found", id);
                 return new NoTraineeException("could not find trainee with id " + id);
             });
-            Trainee newTrainee = map(traineeDto);
+            Trainee newTrainee = traineeMapper.traineeDtoToCommonTrainee(traineeDto);
 
-            logger.info("Setting with old UserId Password and UserName");
+            LOGGER.info("Setting with old UserId Password and UserName");
             newTrainee.setUserId(oldTrainee.getUserId());
             newTrainee.setPassword(oldTrainee.getPassword());
             newTrainee.setUserName(oldTrainee.getUserName());
@@ -97,15 +102,15 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
             newTrainee.setIsActive(oldTrainee.getIsActive());
             newTrainee.setAuthorities(oldTrainee.getAuthorities());
 
-            logger.info("Trying to update Trainee with ID: {}", id);
+            LOGGER.info("Trying to update Trainee with ID: {}", id);
             Optional<Trainee> optionalTrainee = traineeDao.update(newTrainee);
 
             optionalTrainee.ifPresentOrElse(
                     (trainee) -> {
-                        logger.info("trainee with ID: {} has been updated", trainee.getUserId());
+                        LOGGER.info("trainee with ID: {} has been updated", trainee.getUserId());
                         trainee.getTrainings().size();
                     },
-                    () -> logger.warn("trainee with ID: {} was not updated", newTrainee.getUserId())
+                    () -> LOGGER.warn("trainee with ID: {} was not updated", newTrainee.getUserId())
             );
 
             return optionalTrainee;
@@ -122,12 +127,13 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
 
         try {
             Trainee oldTrainee = getByUserName(userName).orElseThrow(() -> {
-                logger.error("Trainee with UserName {} not found", userName);
+                LOGGER.error("Trainee with UserName {} not found", userName);
                 return new NoTraineeException("could not find trainee with UserName " + userName);
             });
-            Trainee newTrainee = map(traineeDto);
 
-            logger.info("Setting with old UserId Password and UserName inside updateByUserName");
+            Trainee newTrainee = traineeMapper.traineeDtoToCommonTrainee(traineeDto);
+
+            LOGGER.info("Setting with old UserId Password and UserName inside updateByUserName");
             newTrainee.setUserId(oldTrainee.getUserId());
             newTrainee.setPassword(oldTrainee.getPassword());
             newTrainee.setUserName(oldTrainee.getUserName());
@@ -135,15 +141,15 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
             newTrainee.setIsActive(oldTrainee.getIsActive());
             newTrainee.setAuthorities(oldTrainee.getAuthorities());
 
-            logger.info("Trying to update Trainee with userName: {}", userName);
+            LOGGER.info("Trying to update Trainee with userName: {}", userName);
             Optional<Trainee> optionalTrainee = traineeDao.update(newTrainee);
 
             optionalTrainee.ifPresentOrElse(
                     (trainee) -> {
-                        logger.info("trainee with userName: {} has been updated", trainee.getUserName());
+                        LOGGER.info("trainee with userName: {} has been updated", trainee.getUserName());
                         trainee.getTrainings().size();
                     },
-                    () -> logger.warn("trainee with userName: {} was not updated", newTrainee.getUserName())
+                    () -> LOGGER.warn("trainee with userName: {} was not updated", newTrainee.getUserName())
             );
 
             return optionalTrainee;
@@ -159,12 +165,12 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to delete Trainee with ID: {}", id);
+            LOGGER.info("Trying to delete Trainee with ID: {}", id);
             Optional<Trainee> optionalTrainee = traineeDao.delete(id);
 
             optionalTrainee.ifPresentOrElse(
-                    (trainee) -> logger.info("trainee with userId: {} has been deleted", trainee.getUserId()),
-                    () -> logger.warn("trainee with userId: {} was not deleted", id)
+                    (trainee) -> LOGGER.info("trainee with userId: {} has been deleted", trainee.getUserId()),
+                    () -> LOGGER.warn("trainee with userId: {} was not deleted", id)
             );
 
             return optionalTrainee;
@@ -180,12 +186,12 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to delete Trainee with userName: {}", userName);
+            LOGGER.info("Trying to delete Trainee with userName: {}", userName);
             Optional<Trainee> optionalTrainee = traineeDao.deleteWithUserName(userName);
 
             optionalTrainee.ifPresentOrElse(
-                    (trainee) -> logger.info("trainee with userName: {} has been deleted", trainee.getUserName()),
-                    () -> logger.warn("trainee with userName: {} can't be found", userName)
+                    (trainee) -> LOGGER.info("trainee with userName: {} has been deleted", trainee.getUserName()),
+                    () -> LOGGER.warn("trainee with userName: {} can't be found", userName)
             );
 
             return optionalTrainee;
@@ -202,16 +208,16 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to find Trainee with ID: {}", id);
+            LOGGER.info("Trying to find Trainee with ID: {}", id);
 
             Optional<Trainee> traineeOptional = traineeDao.select(id);
 
             traineeOptional.ifPresentOrElse(
                     trainee -> {
                         trainee.getTrainings().size();
-                        logger.info("Found Trainee with ID: {}", id);
+                        LOGGER.info("Found Trainee with ID: {}", id);
                     },
-                    () -> logger.warn("No Trainee found with ID: {}", id)
+                    () -> LOGGER.warn("No Trainee found with ID: {}", id)
             );
 
             return traineeOptional;
@@ -227,13 +233,13 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to find Trainee with UserName: {}", userName);
+            LOGGER.info("Trying to find Trainee with UserName: {}", userName);
 
             Optional<Trainee> traineeOptional = traineeDao.selectWithUserName(userName);
 
             traineeOptional.ifPresentOrElse(
-                    trainee -> logger.info("Found Trainee with UserName: {}", userName),
-                    () -> logger.warn("No Trainee found with UserName: {}", userName)
+                    trainee -> LOGGER.info("Found Trainee with UserName: {}", userName),
+                    () -> LOGGER.warn("No Trainee found with UserName: {}", userName)
             );
 
             return traineeOptional;
@@ -249,15 +255,15 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to change password for Trainee with UserName: {}", username);
+            LOGGER.info("Trying to change password for Trainee with UserName: {}", username);
 
             boolean success = traineeDao.changePassword(username, userService.encodePassword(newPassword));
 
             if (success) {
-                logger.info("Successfully changed password for Trainee with UserName: {}", username);
+                LOGGER.info("Successfully changed password for Trainee with UserName: {}", username);
                 return true;
             } else {
-                logger.warn("Failed to change password for Trainee with UserName: {}", username);
+                LOGGER.warn("Failed to change password for Trainee with UserName: {}", username);
                 return false;
             }
         } finally {
@@ -272,15 +278,15 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         MDC.put("transactionId", transactionId);
 
         try {
-            logger.info("Trying to toggle isActive for Trainee with UserName: {}", username);
+            LOGGER.info("Trying to toggle isActive for Trainee with UserName: {}", username);
 
             boolean success = traineeDao.toggleIsActive(username);
 
             if (success) {
-                logger.info("Successfully toggled isActive for Trainee with UserName: {}", username);
+                LOGGER.info("Successfully toggled isActive for Trainee with UserName: {}", username);
                 return true;
             } else {
-                logger.warn("Failed to toggled isActive for Trainee with UserName: {}", username);
+                LOGGER.warn("Failed to toggled isActive for Trainee with UserName: {}", username);
                 return false;
             }
         } finally {
@@ -298,9 +304,9 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         try {
             Set<Training> trainings = traineeDao.getTraineeTrainings(username, fromDate, toDate, trainerName, trainingTypeName);
             if (trainings.isEmpty()) {
-                logger.warn("No training found for Trainee with UserName: {}", username);
+                LOGGER.warn("No training found for Trainee with UserName: {}", username);
             } else
-                logger.info("training record of size: {} was found for Trainee with UserName: {}", trainings.size(), username);
+                LOGGER.info("training record of size: {} was found for Trainee with UserName: {}", trainings.size(), username);
             return Optional.of(trainings);
         } finally {
             MDC.remove("transactionId");
@@ -316,26 +322,13 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         try {
             Set<Trainer> trainers = traineeDao.getTrainersNotTrainingTraineesWithUserName(traineeUserName);
             if (trainers.isEmpty()) {
-                logger.warn("No unassigned trainers found");
+                LOGGER.warn("No unassigned trainers found");
             } else
-                logger.info("Trainer record of size: {} was found for Trainers not matched with Trainee with username: {}",
+                LOGGER.info("Trainer record of size: {} was found for Trainers not matched with Trainee with username: {}",
                         trainers.size(), traineeUserName);
             return Optional.of(trainers);
         } finally {
             MDC.remove("transactionId");
         }
-    }
-
-    private Trainee map(TraineeDto traineeDto) {
-        Trainee trainee = new Trainee();
-        logger.info("New Trainee, populating it with given traineeDto");
-
-        trainee.setFirstName(traineeDto.getFirstName());
-        trainee.setLastName(traineeDto.getLastName());
-        trainee.setDateOfBirth(traineeDto.getDateOfBirth());
-        trainee.setAddress(traineeDto.getAddress());
-
-        logger.info("New Trainee has been successfully populated with given traineeDto");
-        return trainee;
     }
 }

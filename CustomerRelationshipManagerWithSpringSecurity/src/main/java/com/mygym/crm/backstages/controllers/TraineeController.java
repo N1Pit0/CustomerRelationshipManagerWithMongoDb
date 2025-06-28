@@ -119,7 +119,7 @@ public class TraineeController {
             @PathVariable("userName") String UserName) {
 
         Optional<Set<Trainer>> optionalTrainings = traineeService.getTrainersNotTrainingTraineesWithUserName(
-                UserName
+            UserName
         );
 
         return optionalTrainings

@@ -28,7 +28,7 @@ public class TrainerSummaryServiceImpl implements TrainerSummaryService {
         TrainerSummary trainerSummary = trainerSummaryMapper.toTrainerSummary(trainerWorkloadDto);
         LOGGER.debug("Mapped trainerWorkloadDto to trainerSummary as : {}", trainerSummary);
         LOGGER.info("Saving new trainerSummary: {}", trainerSummary);
-        TrainerSummary savedTrainerSummary = trainerSummaryRepository.save(trainerSummary); // The exception is thrown here!!!
+        TrainerSummary savedTrainerSummary = trainerSummaryRepository.save(trainerSummary);
         LOGGER.info("Trainer summary created for trainer: {}", savedTrainerSummary.getUsername());
         return savedTrainerSummary;
     }

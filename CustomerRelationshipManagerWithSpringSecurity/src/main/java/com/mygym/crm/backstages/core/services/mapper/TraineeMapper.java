@@ -1,5 +1,6 @@
 package com.mygym.crm.backstages.core.services.mapper;
 
+import com.mygym.crm.backstages.core.dtos.request.traineedto.TraineeDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapSelectTrainerDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapUpdateTrainerDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.select.SelectTraineeDto;
@@ -21,6 +22,9 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface TraineeMapper {
+
+    @Mapping(target = "isActive", constant = "true")
+    Trainee traineeDtoToCommonTrainee(TraineeDto traineeDto);
 
     @Mapping(target = "trainers", expression = "java(mapTrainingsSelectTrainersDto(trainee.getTrainings()))")
     SelectTraineeDto traineeToSelectTraineeDto(Trainee trainee);
