@@ -1,6 +1,7 @@
 package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.trainerdto.TrainerDto;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Authorities;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
@@ -28,12 +29,12 @@ public class TrainerServiceImplCommon implements TrainerServiceCommon {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainerServiceImplCommon.class);
     private final TrainerDao trainerDao;
-    private final UserService userService;
+    private final UserServiceUtils userService;
     private final TrainingTypeReadOnlyDao trainingTypeRadOnlyDao;
     private final AuthoritiesService authoritiesService;
 
     @Autowired
-    public TrainerServiceImplCommon(TrainerDao trainerDao, UserService userService, TrainingTypeReadOnlyDao trainingTypeRadOnlyDao, AuthoritiesService authoritiesService) {
+    public TrainerServiceImplCommon(TrainerDao trainerDao, UserServiceUtils userService, TrainingTypeReadOnlyDao trainingTypeRadOnlyDao, AuthoritiesService authoritiesService) {
         this.trainerDao = trainerDao;
         this.userService = userService;
         this.trainingTypeRadOnlyDao = trainingTypeRadOnlyDao;

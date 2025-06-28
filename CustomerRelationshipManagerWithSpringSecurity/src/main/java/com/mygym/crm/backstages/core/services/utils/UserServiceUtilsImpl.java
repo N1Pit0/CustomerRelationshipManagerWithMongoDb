@@ -1,4 +1,4 @@
-package com.mygym.crm.backstages.core.services;
+package com.mygym.crm.backstages.core.services.utils;
 
 import com.mygym.crm.backstages.core.dtos.request.common.UserDto;
 import com.mygym.crm.backstages.interfaces.daorepositories.UserReadOnlyDao;
@@ -15,9 +15,9 @@ import java.util.Random;
 import java.util.Set;
 
 @Service
-public class UserService {
+public class UserServiceUtilsImpl implements UserServiceUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceUtilsImpl.class);
     private UserReadOnlyDao userDao;
     private Validator validator;
     private PasswordEncoder passwordEncoder;

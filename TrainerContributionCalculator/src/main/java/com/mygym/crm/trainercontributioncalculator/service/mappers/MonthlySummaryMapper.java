@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MonthlySummaryMapper {
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "summaryYear", expression = "java(trainerWorkloadDto.getTrainingDate().getYear())")
     @Mapping(target = "summaryMonth", expression = "java(integerToEnum(trainerWorkloadDto.getTrainingDate().getMonthValue()))")
     @Mapping(target = "trainingDuration", constant = "0")

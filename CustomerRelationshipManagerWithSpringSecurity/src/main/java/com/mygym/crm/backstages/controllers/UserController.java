@@ -1,13 +1,13 @@
 package com.mygym.crm.backstages.controllers;
 
-import com.mygym.crm.backstages.core.services.UserService;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private UserService userService;
+    private UserServiceUtils userService;
 
 //    @Autowired
 //    public void setUserService(CommonUserService userService) {

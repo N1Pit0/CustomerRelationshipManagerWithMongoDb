@@ -2,24 +2,24 @@ package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.traineedto.TraineeDto;
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
-import com.mygym.crm.backstages.core.services.mapper.TraineeMapperImpl;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Authorities;
 import com.mygym.crm.backstages.domain.models.Trainee;
-import com.mygym.crm.backstages.repositories.daos.TraineeDaoImpl;
+import com.mygym.crm.backstages.interfaces.daorepositories.TraineeDao;
+import com.mygym.crm.backstages.interfaces.services.AuthoritiesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -27,22 +27,20 @@ import static org.mockito.Mockito.*;
 public class TraineeServiceImplCommonTest {
 
     @Mock
-    private TraineeDaoImpl traineeDao;
+    private TraineeDao traineeDao;
 
     @Mock
-    private UserService userService;
+    private UserServiceUtils userService;
 
     @Mock
-    private Authorities userauthorities;
+    private AuthoritiesService authoritiesService;
 
     @Mock
-    private AuthoritiesServiceImpl authoritiesService;
-
-    @Spy
-    private final TraineeMapper traineeMapper = new TraineeMapperImpl();
+    private TraineeMapper traineeMapper;
 
     @Mock
     private Logger LOGGER;
+
 
     @InjectMocks
     private TraineeServiceImplCommon traineeService;
@@ -53,42 +51,29 @@ public class TraineeServiceImplCommonTest {
     @BeforeEach
     public void setUp(){
 
-        MockitoAnnotations.openMocks(this);
         traineeDto = new TraineeDto();
         traineeDto.setFirstName("John");
         traineeDto.setLastName("Doe");
         traineeDto.setAddress("123 Main St");
         traineeDto.setDateOfBirth(LocalDate.of(1980, 1, 1));
 
+
     }
+
 
     @Test
     void create_ValidTraineeDto_ReturnsCreatedTrainee() {
+
         // Arrange
-        Trainee trainee = mock(Trainee.class);
-//        trainee.setFirstName(traineeDto.getFirstName());
-        when(trainee.getFirstName()).thenReturn(traineeDto.getFirstName());
+        Trainee trainee = new Trainee();
+        trainee.setFirstName(traineeDto.getFirstName());
+        trainee.setLastName(traineeDto.getLastName());
+        trainee.setAddress(traineeDto.getAddress());
+        trainee.setDateOfBirth(traineeDto.getDateOfBirth());
+        trainee.setIsActive(true);
 
-//        trainee.setLastName(traineeDto.getLastName());
-        when(trainee.getLastName()).thenReturn(traineeDto.getLastName());
-
-//        trainee.setAddress(traineeDto.getAddress());
-        when(trainee.getAddress()).thenReturn(traineeDto.getAddress());
-
-//        trainee.setDateOfBirth(traineeDto.getDateOfBirth());
-        when(trainee.getDateOfBirth()).thenReturn(traineeDto.getDateOfBirth());
-
-//        trainee.setIsActive(true); // Set other properties as needed
-        when(trainee.getIsActive()).thenReturn(true);
-
-        // Mock the behavior of userService
+        when(traineeMapper.traineeDtoToCommonTrainee(any(TraineeDto.class))).thenReturn(trainee);
         when(userService.generatePassword()).thenReturn("generatedPassword");
-        doAnswer(invocationOnMock -> {
-            String password = invocationOnMock.getArgument(0);
-            when(userService.generatePassword()).thenReturn(password);
-            return null;
-        }).when(trainee).setPassword(anyString());
-
         when(userService.generateUserName(any(TraineeDto.class))).thenReturn("generatedUsername");
 
         // Mock the behavior of traineeDao
@@ -98,8 +83,8 @@ public class TraineeServiceImplCommonTest {
         Optional<Trainee> result = traineeService.create(traineeDto);
 
         // Assert
-//        assertTrue(result.isPresent());
-//        assertEquals(trainee, result.get());
+        assertTrue(result.isPresent());
+        assertEquals(trainee, result.get());
 
         // Verify interactions
         verify(traineeMapper, times(1)).traineeDtoToCommonTrainee(traineeDto); // Ensure the mapper was called

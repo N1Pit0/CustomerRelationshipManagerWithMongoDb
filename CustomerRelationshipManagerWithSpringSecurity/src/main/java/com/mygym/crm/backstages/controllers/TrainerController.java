@@ -7,7 +7,7 @@ import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.SelectTrain
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.SelectTrainerTrainingsDtoSet;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.TrainerCredentials;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.update.UpdateTrainerDto;
-import com.mygym.crm.backstages.core.services.UserService;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
@@ -32,7 +32,7 @@ import java.util.Set;
 @RequestMapping(value = "users/trainers")
 public class TrainerController {
     private TrainerServiceCommon trainerService;
-    private UserService userService;
+    private UserServiceUtils userService;
     private TrainerMapper mapper;
 
     @Autowired
@@ -41,7 +41,7 @@ public class TrainerController {
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
+    public void setUserService(UserServiceUtils userService) {
         this.userService = userService;
     }
 

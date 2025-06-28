@@ -2,6 +2,7 @@ package com.mygym.crm.backstages.core.services;
 
 import com.mygym.crm.backstages.core.dtos.request.traineedto.TraineeDto;
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Authorities;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
@@ -30,14 +31,14 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraineeServiceImplCommon.class);
     private final TraineeDao traineeDao;
-    private final UserService userService;
+    private final UserServiceUtils userService;
     private final AuthoritiesService authoritiesService;
 
     @Getter
     private final TraineeMapper traineeMapper;
 
     @Autowired
-    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserService userService, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
+    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserServiceUtils userService, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
         this.traineeDao = traineeDao;
         this.userService = userService;
         this.authoritiesService = authoritiesService;
