@@ -15,7 +15,7 @@ public interface TrainerContributionQueueSender {
 
     default boolean fallbackAcceptWorkload(TrainerWorkloadDto trainingWorkloadDto, Throwable throwable) {
         LOGGER.error("Error occurred while sending a message to: {}. The error is {}",
-                TRAINER_CONTRIBUTION_CALCULATOR_QUEUE , throwable.getMessage(), throwable);
+                TRAINER_CONTRIBUTION_CALCULATOR_QUEUE, throwable.getMessage(), throwable);
 
         return false;
     }

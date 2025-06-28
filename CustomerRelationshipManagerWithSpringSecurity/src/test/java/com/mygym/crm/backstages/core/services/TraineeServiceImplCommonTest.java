@@ -41,7 +41,6 @@ public class TraineeServiceImplCommonTest {
     @Mock
     private Logger LOGGER;
 
-
     @InjectMocks
     private TraineeServiceImplCommon traineeService;
 
@@ -56,7 +55,6 @@ public class TraineeServiceImplCommonTest {
         traineeDto.setLastName("Doe");
         traineeDto.setAddress("123 Main St");
         traineeDto.setDateOfBirth(LocalDate.of(1980, 1, 1));
-
 
     }
 
@@ -87,11 +85,11 @@ public class TraineeServiceImplCommonTest {
         assertEquals(trainee, result.get());
 
         // Verify interactions
-        verify(traineeMapper, times(1)).traineeDtoToCommonTrainee(traineeDto); // Ensure the mapper was called
-        verify(userService, times(1)).generatePassword();
-        verify(userService, times(1)).generateUserName(traineeDto);
-        verify(traineeDao, times(1)).create(any(Trainee.class));
-        verify(authoritiesService, times(1)).createAuthority(any(Authorities.class));
+        verify(traineeMapper).traineeDtoToCommonTrainee(traineeDto);
+        verify(userService).generatePassword();
+        verify(userService).generateUserName(traineeDto);
+        verify(traineeDao).create(any(Trainee.class));
+        verify(authoritiesService).createAuthority(any(Authorities.class));
     }
 
 //    @Test

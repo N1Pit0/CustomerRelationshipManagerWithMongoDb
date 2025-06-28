@@ -7,8 +7,8 @@ import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.SelectTrain
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.SelectTrainerTrainingsDtoSet;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.select.TrainerCredentials;
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.update.UpdateTrainerDto;
-import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.core.services.mapper.TrainerMapper;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
 import com.mygym.crm.backstages.exceptions.custom.NoResourceException;

@@ -10,14 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Random;
 import java.util.Set;
 
+@RequestScope
 @Service
 public class UserServiceUtilsImpl implements UserServiceUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceUtilsImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceUtilsImpl.class);
     private UserReadOnlyDao userDao;
     private Validator validator;
     private PasswordEncoder passwordEncoder;
@@ -47,7 +49,7 @@ public class UserServiceUtilsImpl implements UserServiceUtils {
                 sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("; ");
             }
 
-            logger.error(sb.toString());
+            LOGGER.error(sb.toString());
             throw new IllegalArgumentException("Validation errors: " + sb.toString());
         }
     }
@@ -69,7 +71,7 @@ public class UserServiceUtilsImpl implements UserServiceUtils {
             password.append(c);
         }
 
-        this.password = password.toString();// This might be a vulnerability issue
+        this.password = password.toString();// This might be a security vulnerability issue
         return encodePassword(password.toString());
     }
 

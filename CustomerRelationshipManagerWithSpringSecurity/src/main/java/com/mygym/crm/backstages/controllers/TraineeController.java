@@ -8,8 +8,8 @@ import com.mygym.crm.backstages.core.dtos.response.traineedto.select.SelectTrain
 import com.mygym.crm.backstages.core.dtos.response.traineedto.select.SelectTrainerNotAssignedDtoSet;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.select.TraineeCredentialsDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.update.UpdateTraineeDto;
-import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
+import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Trainee;
 import com.mygym.crm.backstages.domain.models.Trainer;
 import com.mygym.crm.backstages.domain.models.Training;
@@ -119,7 +119,7 @@ public class TraineeController {
             @PathVariable("userName") String UserName) {
 
         Optional<Set<Trainer>> optionalTrainings = traineeService.getTrainersNotTrainingTraineesWithUserName(
-            UserName
+                UserName
         );
 
         return optionalTrainings

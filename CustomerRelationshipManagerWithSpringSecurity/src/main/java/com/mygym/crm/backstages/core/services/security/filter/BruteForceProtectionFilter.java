@@ -5,9 +5,11 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.io.IOException;
 
+@RequestScope
 @Component
 public class BruteForceProtectionFilter implements Filter {
 
@@ -27,11 +29,9 @@ public class BruteForceProtectionFilter implements Filter {
         // Intercept requests targeting the login endpoint
         if ("/CustomerRelationShipManager/error".equals(httpRequest.getRequestURI()) && httpRequest.getMethod().equalsIgnoreCase("POST")) {
             String username = httpRequest.getParameter("username");
-            System.out.println(username);
             if (username != null && loginAttemptService.isBlocked(username)) {
                 // If the user is blocked, stop further processing
                 httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User account is locked due to too many failed login attempts.");
-                System.out.println("I am blocking " + username);
                 return; // Stop the filter chain
             }
         }

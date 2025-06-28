@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +32,23 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraineeServiceImplCommon.class);
     private final TraineeDao traineeDao;
-    private final UserServiceUtils userService;
     private final AuthoritiesService authoritiesService;
-
     @Getter
     private final TraineeMapper traineeMapper;
+    private UserServiceUtils userServiceUtils;
 
     @Autowired
-    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserServiceUtils userService, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
+    public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserServiceUtils userServiceUtils, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
         this.traineeDao = traineeDao;
-        this.userService = userService;
         this.authoritiesService = authoritiesService;
         this.traineeMapper = traineeMapper;
+        this.userServiceUtils = userServiceUtils;
+    }
+
+    @Autowired
+    @Lookup
+    public void setUserService(UserServiceUtils userService) {
+        this.userServiceUtils = userService;
     }
 
     @Transactional
@@ -55,10 +61,10 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
             Trainee newTrainee = traineeMapper.traineeDtoToCommonTrainee(traineeDto);
 
             LOGGER.info("Trying to generate new password while attempting to create a new trainee");
-            newTrainee.setPassword(userService.generatePassword());
+            newTrainee.setPassword(userServiceUtils.generatePassword());
 
             LOGGER.info("Trying to generate new username while attempting to create a new trainee");
-            newTrainee.setUserName(userService.generateUserName(traineeDto));
+            newTrainee.setUserName(userServiceUtils.generateUserName(traineeDto));
 
             LOGGER.info("Trying to create new trainee with UserName: {}", newTrainee.getUserName());
             Optional<Trainee> optionalTrainee = traineeDao.create(newTrainee);
@@ -258,7 +264,7 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         try {
             LOGGER.info("Trying to change password for Trainee with UserName: {}", username);
 
-            boolean success = traineeDao.changePassword(username, userService.encodePassword(newPassword));
+            boolean success = traineeDao.changePassword(username, userServiceUtils.encodePassword(newPassword));
 
             if (success) {
                 LOGGER.info("Successfully changed password for Trainee with UserName: {}", username);

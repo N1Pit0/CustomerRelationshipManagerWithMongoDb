@@ -4,10 +4,12 @@ import com.mygym.crm.backstages.interfaces.services.security.LoginAttemptService
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequestScope
 @Service
 public class LoginAttemptServiceImpl implements LoginAttemptService {
 

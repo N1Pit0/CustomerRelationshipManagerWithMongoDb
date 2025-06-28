@@ -17,15 +17,15 @@ import org.springframework.context.annotation.Configuration;
 )
 public class OpenAPIConfig {
 
-        @Bean
-        public OpenAPI customOpenAPI() {
+    @Bean
+    public OpenAPI customOpenAPI() {
 
-                SecurityScheme bearerAuth = new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT");
+        SecurityScheme bearerAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
 
-                return new OpenAPI()
-                        .schemaRequirement("BearerAuth", bearerAuth);
-        }
+        return new OpenAPI()
+                .schemaRequirement("BearerAuth", bearerAuth);
+    }
 }

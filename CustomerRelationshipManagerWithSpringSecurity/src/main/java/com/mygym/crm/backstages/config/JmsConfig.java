@@ -1,7 +1,6 @@
 package com.mygym.crm.backstages.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mygym.crm.sharedmodule.TrainerWorkloadDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
@@ -20,11 +19,9 @@ import org.springframework.jms.support.converter.MessageType;
 
 public class JmsConfig {
 
-    private DiscoveryClient discoveryClient;
-
-    private ObjectMapper objectMapper;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JmsConfig.class);
+    private DiscoveryClient discoveryClient;
+    private ObjectMapper objectMapper;
 
     @Autowired
     public void setDiscoveryClient(DiscoveryClient discoveryClient) {

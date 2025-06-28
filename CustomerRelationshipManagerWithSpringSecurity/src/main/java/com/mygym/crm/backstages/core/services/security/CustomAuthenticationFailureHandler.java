@@ -9,9 +9,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.io.IOException;
 
+@RequestScope
 @Service
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
