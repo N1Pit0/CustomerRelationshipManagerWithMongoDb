@@ -1,5 +1,6 @@
 package com.mygym.crm.backstages.core.dtos.response.traineedto.update;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.mapping.MapUpdateTrainerDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateTraineeDto {
     private String firstName;
 

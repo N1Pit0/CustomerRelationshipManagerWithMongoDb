@@ -1,8 +1,11 @@
 package com.mygym.crm.backstages.controllers;
 
+import com.mygym.crm.backstages.core.dtos.request.common.CombineUserDtoWithSecurityDto;
+import com.mygym.crm.backstages.core.dtos.request.common.UserDto;
 import com.mygym.crm.backstages.core.dtos.request.traineedto.TraineeDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.select.SelectTraineeDto;
 import com.mygym.crm.backstages.core.dtos.response.traineedto.select.TraineeCredentialsDto;
+import com.mygym.crm.backstages.core.dtos.response.traineedto.update.UpdateTraineeDto;
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Trainee;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -50,6 +55,8 @@ public class TraineeControllerSteps {
     private ResponseEntity<SelectTraineeDto> getTraineeResponse;
 
     private ResponseEntity<TraineeCredentialsDto> createTraineeResponse;
+
+    private ResponseEntity<UpdateTraineeDto> updateTraineeResponse;
 
     private TraineeDto traineeDto;
 
@@ -128,4 +135,43 @@ public class TraineeControllerSteps {
         assertEquals("password", body.getPassword());
 
     }
+
+    @When("I send a PUT request to {string} with updated trainee details")
+    public void iSendAPutRequestToWithUpdatedTraineeDetails(String endpoint) {
+        var combineUserDtoWithSecurityDto = new CombineUserDtoWithSecurityDto<UserDto>();
+
+        var userDto = new UserDto();
+        userDto.setFirstName("Updated John");
+        userDto.setLastName("Updated Doe");
+
+        combineUserDtoWithSecurityDto.setUserDto(userDto);
+
+        var updatedTrainee = new Trainee();
+        updatedTrainee.setFirstName("Updated John");
+        updatedTrainee.setLastName("Updated Doe");
+
+        var updatedTraineeDto = new UpdateTraineeDto();
+        updatedTraineeDto.setFirstName("Updated John");
+        updatedTraineeDto.setLastName("Updated Doe");
+
+        when(traineeService.updateByUserName(anyString(), any(TraineeDto.class))).thenReturn(Optional.of(updatedTrainee));
+        when(traineeMapper.traineeToUpdateTraineeDto(any(Trainee.class))).thenReturn(updatedTraineeDto);
+
+        updateTraineeResponse = restTemplate.exchange(endpoint, HttpMethod.PUT, new HttpEntity<>(combineUserDtoWithSecurityDto), UpdateTraineeDto.class);
+    }
+
+    @Then("the response status code for put should be {int}")
+    public void theResponseStatusCodeForPutShouldBe(int statusCode) {
+        assertEquals(HttpStatus.valueOf(statusCode), updateTraineeResponse.getStatusCode());
+    }
+
+    @Then("the response should contain the updated trainee profile")
+    public void theResponseShouldContainTheUpdatedTraineeProfile() {
+        assertNotNull(updateTraineeResponse);
+        var responseBody = updateTraineeResponse.getBody();
+        assertNotNull(responseBody);
+        assertEquals("Updated John", responseBody.getFirstName());
+        assertEquals("Updated Doe", responseBody.getLastName());
+    }
+
 }
