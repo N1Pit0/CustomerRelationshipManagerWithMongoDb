@@ -9,7 +9,6 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import java.io.IOException;
 
-@RequestScope
 @Component
 public class BruteForceProtectionFilter implements Filter {
 

@@ -33,23 +33,15 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/users/trainees")
 public class TraineeController {
-    private TraineeServiceCommon traineeService;
-    private UserServiceUtils userService;
-    private TraineeMapper mapper;
+    private final TraineeServiceCommon traineeService;
+    private final UserServiceUtils userService;
+    private final TraineeMapper mapper;
 
     @Autowired
-    public void setTraineeService(@Qualifier("traineeDeleteTraining") TraineeServiceCommon traineeService) {
+    public TraineeController(@Qualifier("traineeDeleteTraining") TraineeServiceCommon traineeService, UserServiceUtils userService, TraineeMapper mapper) {
         this.traineeService = traineeService;
-    }
-
-    @Autowired
-    public void setMapper(TraineeMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    @Autowired
-    public void setUserService(UserServiceUtils userService) {
         this.userService = userService;
+        this.mapper = mapper;
     }
 
     @SecurityRequirement(name = "BearerAuth")

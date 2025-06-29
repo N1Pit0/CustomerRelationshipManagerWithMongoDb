@@ -7,6 +7,7 @@ import com.mygym.crm.backstages.core.services.security.filter.JwtAuthenticationF
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,16 +19,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+    private Environment environment;
 
     private BruteForceProtectionFilter bruteForceProtectionFilter;
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
 
     @Autowired
     public void setBruteForceProtectionFilter(BruteForceProtectionFilter bruteForceProtectionFilter) {
@@ -46,38 +54,43 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")){
+            http.csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+        }
+        else {
+            http
+                    .cors(cors -> cors.configurationSource(request -> {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(List.of("http://localhost:3000", "https://mygym.crm"));
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+                        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                        config.setExposedHeaders(List.of("Authorization"));
+                        config.setAllowCredentials(true);
+                        return config;
+                    }))
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests((requests) -> requests
+                            .requestMatchers(HttpMethod.POST, "/users/trainees", "/users/trainers").permitAll()
+                            // Permit unauthenticated access to homepage and public pages
+                            .requestMatchers("/", "/home", "/login").permitAll()
+                            // For other methods on /users/trainees and /users/trainers, authentication is required
+                            .requestMatchers(HttpMethod.GET, "/users/trainees", "/users/trainers").authenticated()
+                            .requestMatchers(HttpMethod.PUT, "/users/trainees", "/users/trainers").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/users/trainees", "/users/trainers").authenticated()
+                            .requestMatchers(HttpMethod.PATCH, "/users/trainees", "/users/trainers").authenticated()
+                            .anyRequest().authenticated()
+                    )
+                    .addFilterBefore(bruteForceProtectionFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterAfter(jwtAuthenticationFilter, BruteForceProtectionFilter.class)
+                    .formLogin(form -> form
+                            .loginPage("/login")
+                            .failureHandler(customAuthenticationFailureHandler)
+                            .successHandler(customAuthenticationSuccessHandler)
+                    )
+                    .logout(LogoutConfigurer::permitAll);
 
-        http
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000", "https://mygym.crm"));
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setExposedHeaders(List.of("Authorization"));
-                    config.setAllowCredentials(true);
-                    return config;
-                }))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/users/trainees", "/users/trainers").permitAll()
-                        // Permit unauthenticated access to homepage and public pages
-                        .requestMatchers("/", "/home", "/login").permitAll()
-                        // For other methods on /users/trainees and /users/trainers, authentication is required
-                        .requestMatchers(HttpMethod.GET, "/users/trainees", "/users/trainers").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/users/trainees", "/users/trainers").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/users/trainees", "/users/trainers").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/users/trainees", "/users/trainers").authenticated()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(bruteForceProtectionFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtAuthenticationFilter, BruteForceProtectionFilter.class)
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .failureHandler(customAuthenticationFailureHandler)
-                        .successHandler(customAuthenticationSuccessHandler)
-                )
-                .logout(LogoutConfigurer::permitAll);
-
+        }
         return http.build();
     }
 

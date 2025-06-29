@@ -15,7 +15,6 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.Random;
 import java.util.Set;
 
-@RequestScope
 @Service
 public class UserServiceUtilsImpl implements UserServiceUtils {
 

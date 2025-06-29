@@ -35,7 +35,7 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
     private final AuthoritiesService authoritiesService;
     @Getter
     private final TraineeMapper traineeMapper;
-    private UserServiceUtils userServiceUtils;
+    private final UserServiceUtils userServiceUtils;
 
     @Autowired
     public TraineeServiceImplCommon(@Qualifier("traineeDaoImpl") TraineeDao traineeDao, UserServiceUtils userServiceUtils, AuthoritiesService authoritiesService, TraineeMapper traineeMapper) {
@@ -43,12 +43,6 @@ public class TraineeServiceImplCommon implements TraineeServiceCommon {
         this.authoritiesService = authoritiesService;
         this.traineeMapper = traineeMapper;
         this.userServiceUtils = userServiceUtils;
-    }
-
-    @Autowired
-    @Lookup
-    public void setUserService(UserServiceUtils userService) {
-        this.userServiceUtils = userService;
     }
 
     @Transactional

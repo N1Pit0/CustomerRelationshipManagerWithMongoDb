@@ -2,11 +2,13 @@ package com.mygym.crm.backstages.core.dtos.response.trainerdto.select;
 
 import com.mygym.crm.backstages.core.dtos.response.trainerdto.mapping.MapSelectTraineeDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 public class SelectTrainerDto {
 
     private String firstName;

@@ -9,7 +9,6 @@ import org.springframework.web.context.annotation.RequestScope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@RequestScope
 @Service
 public class LoginAttemptServiceImpl implements LoginAttemptService {
 

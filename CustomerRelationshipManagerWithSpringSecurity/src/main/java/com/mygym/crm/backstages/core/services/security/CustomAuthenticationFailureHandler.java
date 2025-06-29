@@ -13,7 +13,6 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import java.io.IOException;
 
-@RequestScope
 @Service
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
