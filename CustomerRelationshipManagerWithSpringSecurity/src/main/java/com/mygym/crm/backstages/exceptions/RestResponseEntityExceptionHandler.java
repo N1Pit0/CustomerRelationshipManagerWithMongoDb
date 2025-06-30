@@ -76,7 +76,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<Object> handleResourceEventException(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
 
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatusCode.valueOf(500), request);
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatusCode.valueOf(400), request);
     }
 
 }

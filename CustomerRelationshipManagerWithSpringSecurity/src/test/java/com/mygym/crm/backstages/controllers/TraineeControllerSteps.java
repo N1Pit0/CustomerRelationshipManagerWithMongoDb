@@ -9,7 +9,9 @@ import com.mygym.crm.backstages.core.dtos.response.traineedto.update.UpdateTrain
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Trainee;
+import com.mygym.crm.backstages.exceptions.custom.ResourceCreationException;
 import com.mygym.crm.backstages.interfaces.services.TraineeServiceCommon;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
@@ -55,12 +54,13 @@ public class TraineeControllerSteps {
     private ResponseEntity<SelectTraineeDto> getTraineeResponse;
 
     private ResponseEntity<TraineeCredentialsDto> createTraineeResponse;
+    private ResponseEntity<String> createTraineeErrorResponse;
 
     private ResponseEntity<UpdateTraineeDto> updateTraineeResponse;
 
-    private TraineeDto traineeDto;
+    private ResponseEntity<Void> deleteTraineeResponse;
 
-    private final String ENDPOINT = "/users/trainees/";
+    private ResponseEntity<Void> toggleActiveResponse;
 
     @Autowired
     private ContentNegotiatingViewResolver contentNegotiatingViewResolver;
@@ -78,6 +78,8 @@ public class TraineeControllerSteps {
         var selectTraineeDto = new SelectTraineeDto();
         selectTraineeDto.setFirstName("John");
         selectTraineeDto.setLastName("Doe");
+
+        String ENDPOINT = "/users/trainees/";
 
         when(traineeMapper.traineeToSelectTraineeDto(any(Trainee.class))).thenReturn(selectTraineeDto);
         getTraineeResponse = restTemplate.getForEntity(ENDPOINT + userName, SelectTraineeDto.class);
@@ -99,25 +101,25 @@ public class TraineeControllerSteps {
 
     @Given("a valid trainee payload")
     public void aValidTraineePayload() {
-        traineeDto = new TraineeDto();
-        traineeDto.setFirstName("John");
-        traineeDto.setLastName("Doe");
 
         Trainee responseTrainee = new Trainee();
         responseTrainee.setFirstName("John");
         responseTrainee.setLastName("Doe");
         responseTrainee.setUserName("John.Doe");
         responseTrainee.setPassword("password");
+
         // Set the necessary fields for the trainee payload
         when(traineeService.create(any(TraineeDto.class))).thenReturn(Optional.of(responseTrainee));
         when(userServiceUtils.getPassword()).thenReturn(responseTrainee.getPassword());
 
-        createTraineeResponse = restTemplate.postForEntity(ENDPOINT, traineeDto, TraineeCredentialsDto.class);
 
     }
 
     @When("I send a POST request to {string}")
     public void iSendAPostRequestTo(String endpoint) {
+        TraineeDto traineeDto = new TraineeDto();
+        traineeDto.setFirstName("John");
+        traineeDto.setLastName("Doe");
         createTraineeResponse = restTemplate.postForEntity(endpoint, traineeDto, TraineeCredentialsDto.class);
     }
 
@@ -172,6 +174,56 @@ public class TraineeControllerSteps {
         assertNotNull(responseBody);
         assertEquals("Updated John", responseBody.getFirstName());
         assertEquals("Updated Doe", responseBody.getLastName());
+    }
+
+    @When("I send a DELETE request to {string}")
+    public void iSendADeleteRequestTo(String endpoint) {
+        when(traineeService.deleteWithUserName(anyString())).thenReturn(Optional.of(new Trainee()));
+        deleteTraineeResponse = restTemplate.exchange(endpoint, HttpMethod.DELETE, null, Void.class);
+    }
+
+    @Then("the response status code for delete should be {int}")
+    public void theResponseStatusCodeForDeleteShouldBe(int statusCode) {
+        assertEquals(HttpStatus.valueOf(statusCode), deleteTraineeResponse.getStatusCode());
+    }
+
+    @When("I send a PATCH request to {string}")
+    public void iSendAPatchRequestTo(String endpoint) {
+        when(traineeService.toggleIsActive(anyString())).thenReturn(true);
+        toggleActiveResponse = restTemplate.exchange(endpoint, HttpMethod.PATCH, null, Void.class);
+    }
+
+    @Then("the response status code for patch should be {int}")
+    public void theResponseStatusCodeForPatchShouldBe(int statusCode) {
+        assertEquals(HttpStatus.valueOf(statusCode), toggleActiveResponse.getStatusCode());
+    }
+
+    @Given("an invalid trainee payload")
+    public void anInvalidTraineePayload() {
+
+        when(traineeService.create(any(TraineeDto.class))).thenThrow(new ResourceCreationException("Invalid payload"));
+
+    }
+
+    @When("I send a POST request to {string} with the invalid payload")
+    public void iSendAPOSTRequestToWithTheInvalidPayload(String endpoint) {
+        TraineeDto traineeDto = new TraineeDto();
+        traineeDto.setFirstName("John");
+        traineeDto.setLastName("Doe");
+
+        createTraineeErrorResponse = restTemplate.postForEntity(endpoint, traineeDto, String.class);
+    }
+
+    @Then("the error response status code for post should be {int}")
+    public void theErrorResponseStatusCodeForPostShouldBe(int statusCode) {
+        assertEquals(HttpStatus.valueOf(statusCode), createTraineeErrorResponse.getStatusCode());
+    }
+
+    @And("the response should contain an error message indicating the invalid data")
+    public void theResponseShouldContainAnErrorMessageIndicatingTheInvalidData() {
+        assertNotNull(createTraineeErrorResponse.getBody());
+        Object responseBody = createTraineeErrorResponse.getBody();
+        assertEquals("Invalid payload", responseBody);
     }
 
 }
