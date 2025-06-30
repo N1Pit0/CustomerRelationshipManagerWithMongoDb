@@ -9,7 +9,10 @@ import com.mygym.crm.backstages.core.dtos.response.traineedto.update.UpdateTrain
 import com.mygym.crm.backstages.core.services.mapper.TraineeMapper;
 import com.mygym.crm.backstages.core.services.utils.UserServiceUtils;
 import com.mygym.crm.backstages.domain.models.Trainee;
+import com.mygym.crm.backstages.exceptions.custom.NoResourceException;
 import com.mygym.crm.backstages.exceptions.custom.ResourceCreationException;
+import com.mygym.crm.backstages.exceptions.custom.ResourceUpdateException;
+import com.mygym.crm.backstages.exceptions.custom.ValidationException;
 import com.mygym.crm.backstages.interfaces.services.TraineeServiceCommon;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -31,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,24 +49,26 @@ public class TraineeControllerSteps {
     private TraineeServiceCommon traineeService;
 
     @MockitoBean
+    @Qualifier("userServiceUtilsImpl")
     private UserServiceUtils userServiceUtils;
 
     @MockitoBean
     private TraineeMapper traineeMapper;
 
     private ResponseEntity<SelectTraineeDto> getTraineeResponse;
+    private ResponseEntity<String> getTraineeErrorResponse;
 
     private ResponseEntity<TraineeCredentialsDto> createTraineeResponse;
     private ResponseEntity<String> createTraineeErrorResponse;
 
     private ResponseEntity<UpdateTraineeDto> updateTraineeResponse;
+    private ResponseEntity<String> updateTraineeErrorResponse;
 
     private ResponseEntity<Void> deleteTraineeResponse;
+    private ResponseEntity<String> deleteTraineeErrorResponse;
 
     private ResponseEntity<Void> toggleActiveResponse;
-
-    @Autowired
-    private ContentNegotiatingViewResolver contentNegotiatingViewResolver;
+    private ResponseEntity<String> toggleActiveErrorResponse;
 
     @Given("a trainee with userName {string} exists")
     public void aTraineeWithUserNameExists(String userName) {
@@ -198,18 +203,19 @@ public class TraineeControllerSteps {
         assertEquals(HttpStatus.valueOf(statusCode), toggleActiveResponse.getStatusCode());
     }
 
-    @Given("an invalid trainee payload")
+    @Given("an invalid trainee payload for Post")
     public void anInvalidTraineePayload() {
+        TraineeDto traineeDto = new TraineeDto();
+        traineeDto.setFirstName("John");
 
-        when(traineeService.create(any(TraineeDto.class))).thenThrow(new ResourceCreationException("Invalid payload"));
-
+        doThrow(new ValidationException("Request Input Fields Validation Error"))
+                .when(userServiceUtils).validateDto(any(TraineeDto.class));
     }
 
     @When("I send a POST request to {string} with the invalid payload")
     public void iSendAPOSTRequestToWithTheInvalidPayload(String endpoint) {
         TraineeDto traineeDto = new TraineeDto();
         traineeDto.setFirstName("John");
-        traineeDto.setLastName("Doe");
 
         createTraineeErrorResponse = restTemplate.postForEntity(endpoint, traineeDto, String.class);
     }
@@ -219,11 +225,53 @@ public class TraineeControllerSteps {
         assertEquals(HttpStatus.valueOf(statusCode), createTraineeErrorResponse.getStatusCode());
     }
 
-    @And("the response should contain an error message indicating the invalid data")
+    @Then("the response should contain an error message indicating the invalid data")
     public void theResponseShouldContainAnErrorMessageIndicatingTheInvalidData() {
         assertNotNull(createTraineeErrorResponse.getBody());
         Object responseBody = createTraineeErrorResponse.getBody();
-        assertEquals("Invalid payload", responseBody);
+        assertEquals("Request Input Fields Validation Error", responseBody);
     }
 
+
+    @Given("a non-existing trainee username")
+    public void aNonExistingTraineeUsername() {
+        String username = "non-existing";
+    }
+
+    @When("I send a PUT request to {string} with updated trainee details error")
+    public void iSendAPUTRequestToWithUpdatedTraineeDetailsError(String endpoint) {
+        var combineUserDtoWithSecurityDto = new CombineUserDtoWithSecurityDto<UserDto>();
+
+        var userDto = new UserDto();
+        userDto.setFirstName("Updated John");
+        userDto.setLastName("Updated Doe");
+
+        combineUserDtoWithSecurityDto.setUserDto(userDto);
+
+        var updatedTrainee = new Trainee();
+        updatedTrainee.setFirstName("Updated John");
+        updatedTrainee.setLastName("Updated Doe");
+
+        var updatedTraineeDto = new UpdateTraineeDto();
+        updatedTraineeDto.setFirstName("Updated John");
+        updatedTraineeDto.setLastName("Updated Doe");
+
+        when(traineeService.updateByUserName(anyString(), any(TraineeDto.class))).thenThrow(new NoResourceException("Resource Not Found"));
+        when(traineeMapper.traineeToUpdateTraineeDto(any(Trainee.class))).thenReturn(updatedTraineeDto);
+
+        updateTraineeErrorResponse = restTemplate.exchange(endpoint, HttpMethod.PUT, new HttpEntity<>(combineUserDtoWithSecurityDto), String.class);
+    }
+
+    @Then("the error response status code for put should be {int}")
+    public void theErrorResponseStatusCodeForPutShouldBe(int statusCode) {
+        assertEquals(HttpStatus.valueOf(statusCode), updateTraineeErrorResponse.getStatusCode());
+    }
+
+
+    @And("the response should contain an error message indicating the trainee was not found")
+    public void theResponseShouldContainAnErrorMessageIndicatingTheTraineeWasNotFound() {
+        assertNotNull(updateTraineeErrorResponse.getBody());
+        Object responseBody = updateTraineeErrorResponse.getBody();
+        assertEquals("Resource Not Found", responseBody);
+    }
 }

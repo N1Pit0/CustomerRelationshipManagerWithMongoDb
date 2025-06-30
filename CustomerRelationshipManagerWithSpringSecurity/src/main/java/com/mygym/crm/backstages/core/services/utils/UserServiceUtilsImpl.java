@@ -1,6 +1,7 @@
 package com.mygym.crm.backstages.core.services.utils;
 
 import com.mygym.crm.backstages.core.dtos.request.common.UserDto;
+import com.mygym.crm.backstages.exceptions.custom.ValidationException;
 import com.mygym.crm.backstages.interfaces.daorepositories.UserReadOnlyDao;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Random;
 import java.util.Set;
@@ -49,7 +49,7 @@ public class UserServiceUtilsImpl implements UserServiceUtils {
             }
 
             LOGGER.error(sb.toString());
-            throw new IllegalArgumentException("Validation errors: " + sb.toString());
+            throw new ValidationException("Request Input Fields Validation Error");
         }
     }
 

@@ -30,8 +30,14 @@ Feature: Trainee Management
 
 
   Scenario: Create trainee with invalid data
-    Given an invalid trainee payload
+    Given an invalid trainee payload for Post
     When I send a POST request to "/users/trainees" with the invalid payload
-    Then the error response status code for post should be 400
+    Then the error response status code for post should be 409
     And the response should contain an error message indicating the invalid data
+
+  Scenario: Update non-existing trainee
+    Given a non-existing trainee username
+    When I send a PUT request to "/users/trainees/non-existing" with updated trainee details error
+    Then the error response status code for put should be 404
+    And the response should contain an error message indicating the trainee was not found
 

@@ -30,3 +30,6 @@ logging:
   level:
     root: INFO
     com.mygym.crm.backstages: DEBUG
+
+springdoc:
+  enable-spring-security: false
